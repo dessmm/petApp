@@ -1,10 +1,17 @@
-{# templates/base.twig #}
+{# templates/base.html.twig #}
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>{% block title %}LuxePaws{% endblock %}</title>
+
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+
   <style>
     :root {
       --navy:#1C1F3A;
@@ -16,29 +23,26 @@
       font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, Arial;
     }
     body {margin:0;background:var(--cream);color:var(--char);}
-    .wrap {max-width:var(--container);margin:0 auto;padding:28px}
-    header {display:flex;align-items:center;justify-content:space-between;padding:12px 0}
-    nav a {margin-left:18px;color:var(--navy);text-decoration:none;font-size:15px}
-    .btn {background:var(--gold);color:var(--navy);padding:10px 16px;border-radius:12px;text-decoration:none;font-weight:600}
-    footer {margin-top:30px;padding:18px 0;color:var(--char);font-size:14px;text-align:center;border-top:1px solid rgba(0,0,0,0.1)}
-    .muted {color:rgba(51,51,51,0.7)}
-    h1,h2,h3 {font-family:"Playfair Display", serif;color:var(--navy)}
-    section {margin-top:40px}
+    .wrap {max-width:var(--container);margin:0 auto;padding:28px;}
+    header {display:flex;align-items:center;justify-content:space-between;padding:12px 0;}
+    nav a {margin-left:18px;color:var(--navy);text-decoration:none;font-size:15px;}
+    footer {margin-top:30px;padding:18px 0;color:var(--char);font-size:14px;text-align:center;border-top:1px solid rgba(0,0,0,0.1);}
+    h1,h2,h3 {font-family:"Playfair Display", serif;color:var(--navy);}
+    section {margin-top:40px;}
   </style>
+
   {% block styles %}{% endblock %}
 </head>
 <body>
   <div class="wrap">
     <header>
       {% block header %}
-      <div style="font-weight:700;color:var(--navy);font-size:20px">LuxePaws</div>
-      <nav>
-        <a href="#services">Services</a>
-        <a href="#pricing">Pricing</a>
-        <a href="#reviews">Reviews</a>
-        <a href="#contact">Contact</a>
-        <a class="btn" href="{{ book_url|default('#book') }}">Book Appointment</a>
-      </nav>
+        <a href="{{ path('app_home') }}" style="font-weight:700;color:var(--navy);font-size:20px; text-decoration:none;">
+          LuxePaws
+        </a>
+        <nav>
+          <a href="{{ path('app_product_index') }}">Products</a>
+        </nav>
       {% endblock %}
     </header>
 
@@ -48,10 +52,11 @@
 
     <footer>
       {% block footer %}
-      © {{ "now"|date("Y") }} LuxePaws. Premium Pet Grooming at Your Fingertips.
+        © {{ "now"|date("Y") }} LuxePaws
       {% endblock %}
     </footer>
   </div>
+
   {% block scripts %}{% endblock %}
 </body>
 </html>

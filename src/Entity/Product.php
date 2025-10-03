@@ -20,8 +20,8 @@ class Product
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column]
-    private ?int $size = null;
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
+    private ?string $price = null;
 
     public function getId(): ?int
     {
@@ -36,7 +36,6 @@ class Product
     public function setName(string $name): static
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -48,19 +47,17 @@ class Product
     public function setDescription(?string $description): static
     {
         $this->description = $description;
-
         return $this;
     }
 
-    public function getSize(): ?int
+    public function getPrice(): ?string
     {
-        return $this->size;
+        return $this->price;
     }
 
-    public function setSize(int $size): static
+    public function setPrice(?string $price): static
     {
-        $this->size = $size;
-
+        $this->price = $price;
         return $this;
     }
 }
