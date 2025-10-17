@@ -1,0 +1,93 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contact – LuxePaws{% endblock %}
+
+{% block content %}
+<section class="max-w-3xl mx-auto my-12 bg-[var(--cream)] p-10 rounded-3xl shadow-lg">
+  <h1 class="text-3xl font-bold text-[var(--navy)] mb-6 text-center">Send us a message</h1>
+
+  {# ✅ Success flash message #}
+  {% for message in app.flashes('success') %}
+    <div class="mb-6 p-3 bg-green-100 text-green-800 rounded text-center shadow-sm">
+      {{ message }}
+    </div>
+  {% endfor %}
+
+  {# ✅ Contact form #}
+  {{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
+    <div class="grid md:grid-cols-2 gap-4">
+      <div>
+        {{ form_label(form.firstName, 'First name', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+        {{ form_widget(form.firstName, {'attr': {'class': 'w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--gold)] outline-none'}}) }}
+        {{ form_errors(form.firstName) }}
+      </div>
+      <div>
+        {{ form_label(form.lastName, 'Last name', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+        {{ form_widget(form.lastName, {'attr': {'class': 'w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--gold)] outline-none'}}) }}
+        {{ form_errors(form.lastName) }}
+      </div>
+    </div>
+
+    <div>
+      {{ form_label(form.email, 'Email', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+      {{ form_widget(form.email, {'attr': {'class': 'w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--gold)] outline-none'}}) }}
+      {{ form_errors(form.email) }}
+    </div>
+
+    <div>
+      {{ form_label(form.phone, 'Phone', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+      {{ form_widget(form.phone, {'attr': {
+        'class': 'w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--gold)] outline-none',
+        'placeholder': '09123456789 or +639123456789',
+        'pattern': '^(09|\\+639)\\d{9}$',
+        'title': 'Please enter a valid Philippine mobile number starting with 09 or +639'
+      }}) }}
+      {{ form_errors(form.phone) }}
+    </div>
+
+    <div>
+      {{ form_label(form.subject, 'Subject', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+      {{ form_widget(form.subject, {'attr': {'class': 'w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--gold)] outline-none'}}) }}
+      {{ form_errors(form.subject) }}
+    </div>
+
+    <div>
+      {{ form_label(form.message, 'Message', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+      {{ form_widget(form.message, {'attr': {'class': 'w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--gold)] outline-none', 'rows': 5}}) }}
+      {{ form_errors(form.message) }}
+    </div>
+
+{% if form.status is defined %}
+  <div class="pt-4">
+    {{ form_label(form.status, 'Status', {
+      'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}
+    }) }}
+    {{ form_widget(form.status, {
+      'attr': {
+        'class': 'w-full p-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-[var(--gold)] outline-none'
+      }
+    }) }}
+    {{ form_errors(form.status) }}
+  </div>
+{% endif %}
+
+
+    <div class="text-center pt-4">
+      <button type="submit" class="px-6 py-3 bg-[var(--gold)] text-[var(--navy)] font-semibold rounded-lg shadow hover:bg-yellow-400 transition">
+        Send Message
+      </button>
+    </div>
+  {{ form_end(form) }}
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const phoneInput = document.querySelector('input[name="contact[phone]"]');
+    if (phoneInput) {
+      phoneInput.addEventListener('input', () => {
+        phoneInput.value = phoneInput.value.replace(/[^0-9+]/g, '');
+      });
+    }
+  });
+</script>
+{% endblock %}

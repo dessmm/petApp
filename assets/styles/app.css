@@ -1,8 +1,6 @@
 @import "tailwindcss";
 @source not "../../public";
 
-
-body {
-    background-color: lightgray;
-}
-
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

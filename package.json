@@ -1,14 +1,24 @@
 {
     "devDependencies": {
-        "@babel/core": "^7.17.0",
-        "@babel/preset-env": "^7.16.0",
+        "@babel/core": "^7.28.4",
+        "@babel/preset-env": "^7.28.3",
         "@hotwired/stimulus": "^3.0.0",
         "@hotwired/turbo": "^7.1.0 || ^8.0",
         "@symfony/stimulus-bridge": "^3.2.0 || ^4.0.0",
         "@symfony/ux-turbo": "file:vendor/symfony/ux-turbo/assets",
         "@symfony/webpack-encore": "^5.0.0",
+        "autoprefixer": "^10.4.21",
+        "babel-loader": "^10.0.0",
         "core-js": "^3.38.0",
+        "css": "^3.0.0",
+        "glob-all": "^3.3.1",
+        "path": "^0.12.7",
+        "postcss": "^8.5.6",
+        "postcss-loader": "^8.2.0",
+        "purgecss-webpack-plugin": "^7.0.2",
         "regenerator-runtime": "^0.13.9",
+        "tailwind": "^2.3.1",
+        "tailwindcss": "^4.1.14",
         "webpack": "^5.74.0",
         "webpack-cli": "^5.1.0"
     },
@@ -21,9 +31,26 @@
         "build": "encore production --progress"
     },
     "dependencies": {
+        "@tailwindcss/cli": "^4.1.14",
         "@tailwindcss/postcss": "^4.1.13",
-        "postcss": "^8.5.6",
-        "postcss-loader": "^8.2.0",
-        "tailwindcss": "^4.1.13"
-    }
+        "datatables.net-dt": "^2.3.4"
+    },
+    "name": "pet_app",
+    "version": "1.0.0",
+    "description": "",
+    "main": "webpack.config.js",
+    "directories": {
+        "test": "tests"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/dessmm/petApp.git"
+    },
+    "keywords": [],
+    "author": "",
+    "type": "commonjs",
+    "bugs": {
+        "url": "https://github.com/dessmm/petApp/issues"
+    },
+    "homepage": "https://github.com/dessmm/petApp#readme"
 }

@@ -1,79 +1,131 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}LuxePaws – Premium Pet Grooming{% endblock %}
+{% block title %}LuxePaws – Premium Pet Grooming Appointments{% endblock %}
 
 {% block content %}
-<section class="hero" style="display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:center">
-  <div>
-    <h1>{{ hero_title|default('Premium Pet Grooming at Your Fingertips') }}</h1>
-    <p style="font-size:16px;margin-top:10px">{{ hero_sub|default('Book trusted veterinary groomers. Manage schedules. Keep your pet calm and clean.') }}</p>
-    <div style="margin-top:20px">
-      <a class="btn" href="{{ book_url|default('#book') }}">Book Now</a>
-      <a href="#services" style="margin-left:15px;color:var(--navy);font-weight:600;text-decoration:none">View Services</a>
+
+<style>
+  .fade-section {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.8s ease-out;
+  }
+  .fade-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+
+<section class="text-center py-20 bg-gradient-to-b from-white to-[var(--cream)] rounded-3xl shadow-sm fade-section">
+  <div class="max-w-3xl mx-auto">
+    <h1 class="text-5xl font-bold text-[var(--navy)] leading-tight mb-4">
+      Premium Pet Grooming, <span class="text-[var(--gold)]">Made Simple</span>
+    </h1>
+    <p class="text-gray-600 text-lg mb-8">
+      Book trusted veterinary-certified groomers in just a few clicks. Keep your pets calm, clean, and cared for — anytime, anywhere.
+    </p>
+    <a href="{{ path('app_appointment_new') }}"
+       class="inline-block px-8 py-3 bg-[var(--gold)] text-[var(--navy)] font-semibold rounded-xl shadow hover:bg-yellow-400 transition">
+       Book an Appointment
+    </a>
+  </div>
+
+  <div class="mt-12 flex justify-center">
+    <img src="/images/petgrooming3.jpg" alt="Pet Grooming" class="max-w-md rounded-xl shadow-md">
+  </div>
+</section>
+
+<section id="features" class="mt-24 text-center fade-section">
+  <h2 class="text-3xl font-bold text-[var(--navy)] mb-4">Our Key Features</h2>
+  <p class="text-gray-600 mb-12 max-w-2xl mx-auto">
+    LuxePaws provides everything you need to manage grooming appointments effortlessly.
+  </p>
+
+  <div class="grid md:grid-cols-3 gap-8">
+    <div class="bg-white p-8 rounded-2xl shadow hover:shadow-lg transition">
+      <div class="text-4xl text-[var(--gold)] mb-4">💻</div>
+      <h3 class="text-xl font-semibold text-[var(--navy)]">Online Booking</h3>
+      <p class="text-gray-600 mt-2">Easily schedule appointments online, anytime, anywhere.</p>
+    </div>
+
+    <div class="bg-white p-8 rounded-2xl shadow hover:shadow-lg transition">
+      <div class="text-4xl text-[var(--gold)] mb-4">🐶</div>
+      <h3 class="text-xl font-semibold text-[var(--navy)]">Pet Profiles</h3>
+      <p class="text-gray-600 mt-2">Save pet details, preferences, and health notes for quick bookings.</p>
+    </div>
+
+    <div class="bg-white p-8 rounded-2xl shadow hover:shadow-lg transition">
+      <div class="text-4xl text-[var(--gold)] mb-4">🔔</div>
+      <h3 class="text-xl font-semibold text-[var(--navy)]">Reminders</h3>
+      <p class="text-gray-600 mt-2">Receive real-time updates and appointment reminders automatically.</p>
     </div>
   </div>
-  <div style="background:#fff;padding:20px;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,0.08);text-align:center">
-    {% if hero_image is defined %}
-      <img src="{{ hero_image }}" alt="Pet Grooming" style="max-width:100%;border-radius:12px">
-    {% else %}
-      <div style="font-size:48px">🐾</div>
-      <p class="muted">Hero Image Placeholder</p>
-    {% endif %}
+</section>
+
+<section id="about" class="mt-24 grid md:grid-cols-2 gap-10 items-center bg-white p-10 rounded-3xl shadow-lg fade-section">
+  <div>
+    <h2 class="text-3xl font-bold text-[var(--navy)] mb-4">About LuxePaws</h2>
+    <p class="text-gray-700 leading-relaxed mb-4">
+      LuxePaws is your go-to online system for veterinary-certified pet grooming appointments.
+      We connect pet owners with trusted professionals, ensuring top-quality grooming care
+      while simplifying the scheduling process through an easy-to-use digital platform.
+    </p>
+    <ul class="space-y-2 text-gray-700">
+      <li>✔ Seamless appointment management</li>
+      <li>✔ Certified and experienced groomers</li>
+      <li>✔ Membership and priority booking options</li>
+    </ul>
+  </div>
+  <div class="flex justify-center">
+    <img src="/images/about.jpg" alt="About LuxePaws" class="rounded-2xl shadow-xl w-96 hover:scale-105 transition">
   </div>
 </section>
 
-<section id="services">
-  <h2>Our Services</h2>
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:20px">
-    {% for s in services %}
-      <div style="background:#fff;padding:18px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.05)">
-        <div style="font-weight:700;color:var(--navy)">{{ s.title }}</div>
-        <p class="muted" style="font-size:14px">{{ s.desc }}</p>
-        <a href="{{ s.link|default('#book') }}" class="btn" style="display:inline-block;margin-top:10px;padding:8px 14px">Book</a>
+<section id="reviews" class="mt-24 text-center fade-section">
+  <h2 class="text-3xl font-bold text-[var(--navy)] mb-4">Happy Clients, Happier Pets</h2>
+  <p class="text-gray-600 mb-10">What our customers say about LuxePaws</p>
+  
+  <div class="grid md:grid-cols-3 gap-6">
+    {% for r in reviews|default([
+      {'author': 'Maria D.', 'comment': 'My dog looked amazing! Booking was so easy.', 'stars': 5},
+      {'author': 'John P.', 'comment': 'Professional and kind groomers. Highly recommended.', 'stars': 5},
+      {'author': 'Lena K.', 'comment': 'Convenient and stress-free experience.', 'stars': 4}
+    ]) %}
+      <div class="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition">
+        <p class="text-yellow-500 text-lg">
+          {% for i in 1..r.stars %}★{% endfor %}
+        </p>
+        <p class="italic text-gray-700 mt-2">“{{ r.comment }}”</p>
+        <p class="mt-4 font-semibold text-[var(--navy)]">{{ r.author }}</p>
       </div>
-    {% else %}
-      <p class="muted">No services available.</p>
     {% endfor %}
   </div>
 </section>
 
-<section id="pricing">
-  <h2>Pricing</h2>
-  <div style="display:flex;gap:20px;margin-top:20px;flex-wrap:wrap">
-    {% for p in packages %}
-      <div style="flex:1;min-width:220px;background:#fff;padding:20px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.05)">
-        <div style="font-weight:700">{{ p.name }}</div>
-        <div style="color:var(--gold);font-weight:700;font-size:18px">{{ p.price }}</div>
-        <ul style="margin-top:10px;padding-left:18px;font-size:14px">
-          {% for f in p.features %}
-            <li>{{ f }}</li>
-          {% endfor %}
-        </ul>
-        <a href="{{ p.link|default('#book') }}" class="btn" style="display:inline-block;margin-top:12px">Choose</a>
-      </div>
-    {% else %}
-      <p class="muted">No packages set.</p>
-    {% endfor %}
-  </div>
+<section class="mt-24 text-center py-16 bg-[var(--navy)] text-white rounded-3xl shadow-lg fade-section">
+  <h2 class="text-3xl font-bold mb-4">Ready to Pamper Your Pet?</h2>
+  <p class="text-gray-300 mb-6">Join LuxePaws today and enjoy premium grooming made simple.</p>
+  <a href="{{ path('app_appointment_new') }}"
+     class="inline-block px-8 py-3 bg-[var(--gold)] text-[var(--navy)] font-semibold rounded-xl shadow hover:bg-yellow-400 transition">
+     Get Started
+  </a>
 </section>
 
-<section id="reviews">
-  <h2>What Clients Say</h2>
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:20px">
-    {% for r in reviews %}
-      <div style="background:#fff;padding:16px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.05)">
-        <strong>{{ r.author }}</strong>
-        <div style="color:var(--gold);font-size:14px">
-  {% for i in 1..(r.stars|default(5)) %}
-    ★
-  {% endfor %}
-</div>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const fadeSections = document.querySelectorAll('.fade-section');
 
-        <p class="muted" style="font-size:14px">{{ r.comment }}</p>
-      </div>
-    {% else %}
-      <p class="muted">No reviews yet.</p>
-    {% endfor %}
-  </div>
-</section>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('fade-in');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+
+    fadeSections.forEach(section => observer.observe(section));
+  });
+</script>
+
 {% endblock %}

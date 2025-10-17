@@ -1,0 +1,72 @@
+{{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
+
+  <div class="grid md:grid-cols-2 gap-4">
+    <div>
+      {{ form_label(form.firstName, 'First Name', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+      {{ form_widget(form.firstName, {'attr': {
+        'class': 'w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[var(--gold)] focus:border-[var(--gold)] outline-none'
+      }}) }}
+      {{ form_errors(form.firstName) }}
+    </div>
+
+    <div>
+      {{ form_label(form.lastName, 'Last Name', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+      {{ form_widget(form.lastName, {'attr': {
+        'class': 'w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[var(--gold)] focus:border-[var(--gold)] outline-none'
+      }}) }}
+      {{ form_errors(form.lastName) }}
+    </div>
+  </div>
+
+  <div>
+    {{ form_label(form.email, 'Email Address', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+    {{ form_widget(form.email, {'attr': {
+      'class': 'w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[var(--gold)] focus:border-[var(--gold)] outline-none'
+    }}) }}
+    {{ form_errors(form.email) }}
+  </div>
+
+  <div>
+    {{ form_label(form.phone, 'Phone Number', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+    {{ form_widget(form.phone, {'attr': {
+      'class': 'w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[var(--gold)] focus:border-[var(--gold)] outline-none',
+      'placeholder': '09123456789 or +639123456789'
+    }}) }}
+    {{ form_errors(form.phone) }}
+  </div>
+
+  <div>
+    {{ form_label(form.subject, 'Subject', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+    {{ form_widget(form.subject, {'attr': {
+      'class': 'w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[var(--gold)] focus:border-[var(--gold)] outline-none'
+    }}) }}
+    {{ form_errors(form.subject) }}
+  </div>
+
+  <div>
+    {{ form_label(form.message, 'Message', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+    {{ form_widget(form.message, {'attr': {
+      'class': 'w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[var(--gold)] focus:border-[var(--gold)] outline-none',
+      'rows': 4
+    }}) }}
+    {{ form_errors(form.message) }}
+  </div>
+
+  {% if form.status is defined %}
+  <div class="mt-4">
+    {{ form_label(form.status, 'Status', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+    {{ form_widget(form.status, {'attr': {
+      'class': 'w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[var(--gold)] focus:border-[var(--gold)] outline-none'
+    }}) }}
+    {{ form_errors(form.status) }}
+  </div>
+  {% endif %}
+
+  <div class="text-center pt-6">
+    <button type="submit"
+            class="px-6 py-3 bg-[var(--gold)] text-[var(--navy)] font-semibold rounded-lg shadow hover:bg-yellow-400 transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-[var(--gold)] focus:ring-offset-2">
+      {{ button_label|default('Save Message') }}
+    </button>
+  </div>
+
+{{ form_end(form) }}

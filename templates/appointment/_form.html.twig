@@ -1,0 +1,122 @@
+{{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
+
+<section class="max-w-3xl mx-auto my-12 bg-[var(--cream)] p-10 rounded-3xl shadow-lg">
+  <h1 class="text-3xl font-bold text-[var(--navy)] mb-6 text-center">Book an Appointment</h1>
+
+  {% for message in app.flashes('success') %}
+    <div class="mb-6 p-3 bg-green-100 text-green-800 rounded text-center">
+      {{ message }}
+    </div>
+  {% endfor %}
+
+  <div class="grid md:grid-cols-2 gap-4">
+    <div>
+      {{ form_label(form.petName, 'Pet Name', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+      {{ form_widget(form.petName, {'attr': {'class': 'w-full p-3 border border-gray-300 rounded-lg'}}) }}
+      {{ form_errors(form.petName) }}
+    </div>
+    <div>
+      {{ form_label(form.ownerName, 'Owner Name', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+      {{ form_widget(form.ownerName, {'attr': {'class': 'w-full p-3 border border-gray-300 rounded-lg'}}) }}
+      {{ form_errors(form.ownerName) }}
+    </div>
+  </div>
+
+  <div>
+    {{ form_label(form.ownerEmail, 'Email', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+    {{ form_widget(form.ownerEmail, {'attr': {'class': 'w-full p-3 border border-gray-300 rounded-lg'}}) }}
+    {{ form_errors(form.ownerEmail) }}
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-4">
+    <div>
+      {{ form_label(form.appointmentDate, 'Date', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+      {% set tomorrow = ("now"|date_modify('+1 day')) %}
+      {{ form_widget(form.appointmentDate, {'attr': {'class': 'w-full p-3 border border-gray-300 rounded-lg', 'min': tomorrow|date('Y-m-d')}}) }}
+      {{ form_errors(form.appointmentDate) }}
+    </div>
+    <div>
+      {{ form_label(form.appointmentTime, 'Time', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+      {{ form_widget(form.appointmentTime, {'attr': {'class': 'w-full p-3 border border-gray-300 rounded-lg', 'min': '09:00', 'max': '16:00', 'step': '3600'}}) }}
+      {{ form_errors(form.appointmentTime) }}
+      <p id="timeHelper" class="text-xs text-yellow-600 mt-1 hidden"></p>
+    </div>
+  </div>
+
+  <div>
+    {{ form_label(form.service, 'Service', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+    {{ form_widget(form.service, {'attr': {'id': 'serviceSelect', 'class': 'w-full p-3 border border-gray-300 rounded-lg'}}) }}
+    {{ form_errors(form.service) }}
+  </div>
+
+  <div>
+    <label for="priceDisplay" class="block text-sm font-medium text-gray-700 mb-1">Price</label>
+    <input type="text" id="priceDisplay" readonly
+           class="w-full p-3 border border-gray-200 bg-gray-50 rounded-lg text-[var(--navy)] font-semibold"
+           placeholder="Select a service to see price">
+  </div>
+
+  <div class="text-center pt-6 border-t border-gray-200 mt-6">
+    <a href="{{ path('app_appointment_index') }}" class="text-sm text-gray-500 hover:text-[var(--navy)] mr-4">
+      Cancel
+    </a>
+    <button type="submit" class="px-6 py-3 bg-[var(--gold)] text-[var(--navy)] font-semibold rounded-lg shadow hover:bg-yellow-400 transition">
+      {{ button_label|default('Save Appointment') }}
+    </button>
+  </div>
+</section>
+
+{{ form_end(form) }}
+<script>
+window.addEventListener('load', function () {
+  let serviceSelect = document.getElementById('serviceSelect');
+  const priceDisplay = document.getElementById('priceDisplay');
+
+  if (!serviceSelect) {
+    const selects = document.querySelectorAll('select');
+    for (const sel of selects) {
+      if (sel.querySelector('option[data-price]')) {
+        serviceSelect = sel;
+        break;
+      }
+    }
+  }
+
+  if (!serviceSelect || !priceDisplay) {
+    return;
+  }
+
+  function updatePriceFromSelect() {
+    const selected = serviceSelect.options[serviceSelect.selectedIndex];
+    const price = selected ? (selected.dataset.price || '') : '';
+    priceDisplay.value = price ? '₱' + Number(price).toLocaleString() : '';
+  }
+
+  serviceSelect.addEventListener('change', updatePriceFromSelect);
+  updatePriceFromSelect();
+
+  const timeInput = document.querySelector('input[type="time"]');
+  const timeHelper = document.getElementById('timeHelper');
+  if (timeInput) {
+    timeInput.addEventListener('blur', function () {
+      const v = timeInput.value; 
+      if (!v) return;
+      const [hhStr, mmStr] = v.split(':');
+      const hh = parseInt(hhStr, 10);
+      const mm = parseInt(mmStr || '0', 10);
+      if (mm !== 0) {
+        let newHour = hh + 1;
+        if (newHour > 16) newHour = 16; 
+        if (newHour < 9) newHour = 9;
+        const formatted = String(newHour).padStart(2, '0') + ':00';
+        timeInput.value = formatted;
+        if (timeHelper) {
+          timeHelper.textContent = 'Minutes must be 00. Time adjusted to ' + formatted + '.';
+          timeHelper.classList.remove('hidden');
+          setTimeout(() => timeHelper.classList.add('hidden'), 4000);
+        }
+      }
+    });
+  }
+});
+</script>

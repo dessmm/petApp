@@ -1,20 +1,99 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello AboutController!{% endblock %}
+{% block title %}About – LuxePaws{% endblock %}
 
-{% block body %}
+{% block content %}
+
 <style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+  .fade-section {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.8s ease-out;
+  }
+
+  .fade-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
 </style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Users/dwens/Pet_App/src/Controller/AboutController.php</code></li>
-        <li>Your template at <code>C:/Users/dwens/Pet_App/templates/about/index.html.twig</code></li>
+<section class="grid md:grid-cols-2 gap-10 items-center mb-16 fade-section">
+  <div>
+    <h1 class="text-4xl font-bold text-[var(--navy)] mb-4">
+      About <span class="text-[var(--gold)]">LuxePaws</span>
+    </h1>
+    <p class="text-gray-700 text-[16px] leading-relaxed mb-4">
+      At <strong>LuxePaws</strong>, we believe every pet deserves a luxurious grooming experience. 
+      Our mission is to make pet care effortless by connecting pet owners with trusted, certified groomers — 
+      ensuring every visit leaves tails wagging and owners smiling.
+    </p>
+    <ul class="space-y-2 text-gray-700 text-[15px] font-medium">
+      <li class="flex items-center gap-2">
+        <span class="text-[var(--gold)] text-lg">✔</span> Certified and compassionate pet groomers
+      </li>
+      <li class="flex items-center gap-2">
+        <span class="text-[var(--gold)] text-lg">✔</span> Fast and hassle-free appointment scheduling
+      </li>
+      <li class="flex items-center gap-2">
+        <span class="text-[var(--gold)] text-lg">✔</span> Exclusive membership & priority booking perks
+      </li>
     </ul>
-</div>
+    <a href="{{ path('app_appointment_new') }}"
+       class="inline-block mt-6 px-5 py-2.5 bg-[var(--gold)] text-[var(--navy)] font-semibold rounded-lg shadow hover:bg-yellow-400 transition">
+      Book Your First Appointment →
+    </a>
+  </div>
+
+  <div class="flex justify-center">
+    <img src="/images/about_us.png" alt="LuxePaws Grooming Service"
+         class="w-96 rounded-2xl shadow-lg hover:scale-105 hover:shadow-xl transition-transform duration-300">
+  </div>
+</section>
+
+<section class="py-10 bg-white rounded-2xl shadow-sm fade-section">
+  <h2 class="text-3xl font-bold text-center text-[var(--navy)] mb-8">Our Core Values</h2>
+  <div class="grid md:grid-cols-3 gap-6 px-4 md:px-8">
+    <div class="bg-[var(--cream)] p-6 rounded-xl shadow hover:shadow-md transition">
+      <div class="text-[var(--gold)] text-2xl mb-2">🐶</div>
+      <h3 class="text-lg font-semibold text-[var(--navy)] mb-1">Trust</h3>
+      <p class="text-gray-600 text-sm leading-relaxed">
+        We partner only with experienced, certified professionals to ensure your pets are always in safe hands.
+      </p>
+    </div>
+
+    <div class="bg-[var(--cream)] p-6 rounded-xl shadow hover:shadow-md transition">
+      <div class="text-[var(--gold)] text-2xl mb-2">💛</div>
+      <h3 class="text-lg font-semibold text-[var(--navy)] mb-1">Care</h3>
+      <p class="text-gray-600 text-sm leading-relaxed">
+        Each pet receives personalized attention, gentle handling, and the best grooming experience possible.
+      </p>
+    </div>
+
+    <div class="bg-[var(--cream)] p-6 rounded-xl shadow hover:shadow-md transition">
+      <div class="text-[var(--gold)] text-2xl mb-2">⏰</div>
+      <h3 class="text-lg font-semibold text-[var(--navy)] mb-1">Convenience</h3>
+      <p class="text-gray-600 text-sm leading-relaxed">
+        Book, reschedule, or manage appointments anytime — all in one easy-to-use online platform.
+      </p>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const fadeSections = document.querySelectorAll('.fade-section');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('fade-in');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+
+    fadeSections.forEach(section => observer.observe(section));
+  });
+</script>
+
 {% endblock %}

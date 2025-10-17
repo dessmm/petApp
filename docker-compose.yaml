@@ -21,7 +21,7 @@ services:
       PMA_HOST: mysql
       PMA_USER: ${MYSQL_USER}
       PMA_PASSWORD: ${MYSQL_PASSWORD}
-    ports:  
+    ports:   
       - "8000:80"
     depends_on:
       - mysql

@@ -1,0 +1,89 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Services & Pricing – LuxePaws{% endblock %}
+
+{% block content %}
+<section class="max-w-7xl mx-auto px-6 py-20 bg-[var(--cream)]">
+  <div class="text-center mb-14">
+    <h2 class="text-sm font-semibold text-[var(--gold)] uppercase tracking-widest">Our Services</h2>
+    <h1 class="mt-2 text-5xl font-bold text-[var(--navy)] sm:text-6xl">Pamper Your Pet, the Luxe Way</h1>
+    <p class="mx-auto mt-6 max-w-2xl text-lg text-gray-600 leading-relaxed">
+      Choose from our curated grooming packages designed to keep your pets clean, stylish, and happy — 
+      handled with care by certified professionals.
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+    <style>
+   .service-card {
+        background: linear-gradient(160deg, #e6e1d3, #dcd5c5); 
+        border: 1px solid rgba(212, 175, 55, 0.25);
+        box-shadow: 0 8px 20px rgba(28, 31, 58, 0.15);
+        transition: all 0.4s ease;
+        transform: translateY(20px);
+        opacity: 0;
+      }
+      .service-card.visible {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      .service-card:hover {
+        transform: translateY(-8px);
+        background: linear-gradient(160deg, #e0dac9, #d5ccb7);
+        box-shadow: 0 16px 32px rgba(28, 31, 58, 0.25);
+      }
+    </style>
+
+
+
+
+    {% for service in services %}
+      <div class="service-card rounded-2xl p-8 shadow-sm hover:shadow-lg transition">
+        <h3 class="text-2xl font-semibold text-[var(--navy)] mb-2">{{ service.name }}</h3>
+        <p class="flex items-baseline gap-x-2 mb-4">
+          <span class="text-4xl font-bold text-[var(--gold)]">₱{{ service.price|number_format(0, '.', ',') }}</span>
+          <span class="text-base text-gray-500">/session</span>
+        </p>
+
+        <p class="text-gray-700 text-sm leading-relaxed mb-6">
+          {{ service.description ?? 'A premium grooming session designed for comfort and style.' }}
+        </p>
+
+        <ul class="space-y-2 text-sm text-gray-600 mb-6">
+          <li class="flex gap-x-2"><span class="text-[var(--gold)]">✔</span> Certified Groomers</li>
+          <li class="flex gap-x-2"><span class="text-[var(--gold)]">✔</span> Safe, Gentle Products</li>
+          <li class="flex gap-x-2"><span class="text-[var(--gold)]">✔</span> Stress-Free Experience</li>
+        </ul>
+
+        <a href="{{ path('app_appointment_new') }}?service={{ service.id }}"
+           class="inline-block rounded-lg bg-[var(--gold)] px-5 py-2 text-sm font-semibold text-[var(--navy)] hover:bg-yellow-400 transition">
+          Book Now
+        </a>
+      </div>
+    {% else %}
+      <div class="text-center text-gray-500 w-full py-10 col-span-3">
+        <p>No services available at the moment. Please check back later.</p>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const cards = document.querySelectorAll('.service-card');
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target); 
+        }
+      });
+    }, { threshold: 0.2 });
+
+    cards.forEach(card => observer.observe(card));
+  });
+</script>
+{% endblock %}

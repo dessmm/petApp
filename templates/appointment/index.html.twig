@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Appointments{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-bold">Appointments</h1>
+  <a href="{{ path('app_appointment_new') }}"
+     class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+     Book New Appointment
+  </a>
+</div>
+
+<table class="min-w-full bg-white border border-gray-200 rounded-lg shadow">
+  <thead class="bg-gray-100">
+    <tr>
+      <th class="py-2 px-4 text-left">Pet Name</th>
+      <th class="py-2 px-4 text-left">Owner Name</th>
+      <th class="py-2 px-4 text-left">Service</th>
+      <th class="py-2 px-4 text-left">Price</th>
+      <th class="py-2 px-4 text-left">Date</th>
+      <th class="py-2 px-4 text-left">Time</th>
+      <th class="py-2 px-4 text-left">Actions</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {% set today = "now"|date('Y-m-d') %}
+
+    {% for appointment in appointments %}
+      {% if appointment.appointmentDate|date('Y-m-d') >= today %}
+        <tr class="border-t hover:bg-gray-50">
+          <td class="py-2 px-4 font-medium text-gray-800">{{ appointment.petName }}</td>
+          <td class="py-2 px-4 text-gray-800">{{ appointment.ownerName }}</td>
+          <td class="py-2 px-4 font-medium text-gray-800">{{ appointment.service.name }}</td>
+          <td class="py-2 px-4 text-gray-700">₱{{ appointment.service.price|number_format(2, '.', ',') }}</td>
+          <td class="py-2 px-4 text-gray-700">{{ appointment.appointmentDate|date('F d, Y') }}</td>
+          <td class="py-2 px-4 text-gray-700">{{ appointment.appointmentTime|date('h:i A') }}</td>
+          <td class="py-2 px-4 flex items-center space-x-2">
+            <a href="{{ path('app_appointment_show', {'id': appointment.id}) }}" 
+              class="px-2 py-1 rounded bg-green-600 text-white text-sm font-medium hover:bg-green-700 transition">
+              View
+            </a>
+            <a href="{{ path('app_appointment_edit', {'id': appointment.id}) }}" 
+              class="px-2 py-1 rounded bg-[var(--gold)] text-[var(--navy)] text-sm font-medium hover:bg-yellow-400 transition">
+              Edit
+            </a>
+            <a href="{{ path('app_appointment_delete', {'id': appointment.id}) }}" 
+              class="px-2 py-1 rounded bg-red-600 text-white text-sm font-medium hover:bg-red-700 transition">
+              Delete
+            </a>
+          </td>
+        </tr>
+      {% endif %}
+    {% else %}
+      <tr>
+        <td colspan="7" class="py-4 text-center text-gray-500">No upcoming appointments found.</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
