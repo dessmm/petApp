@@ -1,0 +1,18 @@
+{% extends 'admin_dashboard/base.html.twig' %}
+
+{% block title %}Edit Appointment{% endblock %}
+
+{% block content %}
+  <h2 class="text-2xl font-semibold mb-6">Edit Appointment</h2>
+
+  <div class="bg-white p-6 shadow rounded-lg">
+    {{ include('appointment/_form.html.twig', {
+      form: form,
+      button_label: 'Update Appointment'
+    }) }}
+  </div>
+
+  <div class="mt-6">
+    {{ include('appointment/_delete_form.html.twig') }}
+  </div>
+{% endblock %}

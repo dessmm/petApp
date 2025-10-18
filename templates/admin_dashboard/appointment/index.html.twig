@@ -1,0 +1,160 @@
+{% extends 'admin_dashboard/base.html.twig' %}
+
+{% block title %}Appointments – Admin{% endblock %}
+
+{% block content %}
+<section class="p-6 bg-white rounded-2xl shadow-lg border border-gray-200">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="text-3xl font-bold text-[var(--navy)]">Appointments</h1>
+      <p class="text-sm text-gray-600">Manage all customer bookings below.</p>
+    </div>
+
+    <a href="{{ path('app_admin_dashboard') }}"
+       class="px-3 py-2 bg-[var(--gold)] text-[var(--navy)] font-semibold rounded-lg shadow hover:bg-yellow-400 transition">
+      ← Dashboard
+    </a>
+  </div>
+
+  <div class="bg-[#f8f9fc] rounded-xl border border-gray-200 p-4 overflow-x-auto">
+    <table id="appointmentsTable" class="display min-w-full text-sm text-gray-800">
+      <thead class="bg-[var(--gold)] text-[var(--navy)] uppercase font-semibold tracking-wider">
+        <tr>
+          <th class="px-5 py-3 text-left">Pet</th>
+          <th class="px-5 py-3 text-left">Owner</th>
+          <th class="px-5 py-3 text-left">Service</th>
+          <th class="px-5 py-3 text-left">Date</th>
+          <th class="px-5 py-3 text-left">Time</th>
+          <th class="px-5 py-3 text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200">
+        {% for appointment in appointments %}
+          <tr class="hover:bg-yellow-50 transition duration-150">
+            <td class="px-5 py-3 font-semibold text-[var(--gold)]">{{ appointment.petName }}</td>
+            <td class="px-5 py-3">
+              <div class="font-medium text-[var(--navy)]">{{ appointment.ownerName }}</div>
+              <div class="text-xs text-gray-500">{{ appointment.ownerEmail }}</div>
+            </td>
+            <td class="px-5 py-3 text-[var(--navy)]">{{ appointment.service ? appointment.service.name : '—' }}</td>
+            <td class="px-5 py-3">{{ appointment.appointmentDate ? appointment.appointmentDate|date('M d, Y') : '—' }}</td>
+            <td class="px-5 py-3">{{ appointment.appointmentTime ? appointment.appointmentTime|date('h:i A') : '—' }}</td>
+            <td class="px-5 py-3 text-center space-x-2">
+              <a href="{{ path('app_admin_appointments_show', {'id': appointment.id}) }}"
+                 class="inline-block px-3 py-1 bg-blue-600 text-white rounded-md text-xs font-semibold hover:bg-blue-700 transition">
+                View
+              </a>
+              <a href="{{ path('app_admin_appointments_edit', {'id': appointment.id}) }}"
+                 class="inline-block px-3 py-1 bg-yellow-400 text-[var(--navy)] rounded-md text-xs font-semibold hover:bg-yellow-300 transition">
+                Edit
+              </a>
+              <form method="post" action="{{ path('app_admin_appointments_delete', {'id': appointment.id}) }}"
+                    class="inline"
+                    onsubmit="return confirm('Are you sure you want to delete this appointment?');">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ appointment.id) }}">
+                <button type="submit"
+                        class="px-3 py-1 bg-red-600 text-white rounded-md text-xs font-semibold hover:bg-red-700 transition">
+                  Delete
+                </button>
+              </form>
+            </td>
+          </tr>
+        {% else %}
+          <tr>
+            <td colspan="6" class="px-5 py-6 text-center text-gray-400 italic">No appointments found</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+{% block javascripts %}
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.3.4/css/dataTables.dataTables.min.css">
+  <script src="https://cdn.datatables.net/2.3.4/js/dataTables.min.js"></script>
+
+  <style>
+    .dataTables_wrapper {
+      color: #1e293b !important;
+      margin-top: 1rem;
+    }
+
+    .dataTables_length label,
+    .dataTables_filter label,
+    .dataTables_info {
+      color: #374151 !important;
+      font-size: 0.875rem;
+    }
+
+    .dataTables_filter input {
+      margin-left: 0.5rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 0.4rem 0.6rem;
+      background: #ffffff;
+      color: #1e293b;
+      outline: none;
+    }
+
+    .dataTables_filter input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.3);
+    }
+
+    .dataTables_length select {
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 0.3rem 0.4rem;
+      background: #ffffff;
+      color: #1e293b;
+      outline: none;
+    }
+
+    .dataTables_length select:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.3);
+    }
+
+    .dataTables_paginate a {
+      color: #1e293b !important;
+      padding: 4px 8px;
+      margin: 0 2px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    .dataTables_paginate a:hover {
+      background: #f1f5f9;
+      color: var(--navy) !important;
+    }
+
+    .dataTables_paginate .current {
+      background: var(--gold) !important;
+      color: var(--navy) !important;
+      border-radius: 6px;
+      padding: 4px 8px;
+    }
+  </style>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      if ($.fn.dataTable.isDataTable('#appointmentsTable')) {
+        $('#appointmentsTable').DataTable().destroy();
+      }
+
+      const table = new DataTable('#appointmentsTable', {
+        pageLength: 8,
+        ordering: true,
+        responsive: true,
+        autoWidth: false,
+        language: {
+          search: "🔍 Search:",
+          lengthMenu: "Show _MENU_ per page",
+          info: "Showing _START_–_END_ of _TOTAL_ appointments",
+          paginate: { previous: "← Prev", next: "Next →" }
+        }
+      });
+    });
+  </script>
+{% endblock %}
+{% endblock %}

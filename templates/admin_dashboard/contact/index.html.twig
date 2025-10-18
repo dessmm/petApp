@@ -1,0 +1,86 @@
+{% extends 'admin_dashboard/base.html.twig' %}
+
+{% block title %}Messages – Admin{% endblock %}
+
+{% block content %}
+<section class="p-8 bg-white rounded-2xl shadow-lg border border-gray-200">
+  <div class="flex items-center justify-between mb-8">
+    <div>
+      <h1 class="text-4xl font-extrabold text-[var(--navy)]">Messages</h1>
+      <p class="text-sm text-gray-600 mt-1">All inquiries submitted by customers.</p>
+    </div>
+
+    <a href="{{ path('app_admin_dashboard') }}"
+       class="px-5 py-2 bg-[var(--gold)] text-[var(--navy)] font-semibold rounded-lg shadow-md hover:bg-yellow-400 transition">
+      ← Dashboard
+    </a>
+  </div>
+
+  <div class="bg-[#f8f9fc] rounded-xl border border-gray-200 p-6 overflow-x-auto shadow-inner">
+    <table class="min-w-full text-sm text-gray-800 border-collapse">
+      <thead class="bg-[var(--gold)] text-[var(--navy)] uppercase font-semibold tracking-wide">
+        <tr>
+          <th class="px-5 py-3 text-left">Name</th>
+          <th class="px-5 py-3 text-left">Phone</th>
+          <th class="px-5 py-3 text-left">Email</th>
+          <th class="px-5 py-3 text-left">Subject</th>
+          <th class="px-5 py-3 text-left">Message</th>
+          <th class="px-5 py-3 text-left">Submitted</th>
+          <th class="px-5 py-3 text-left">Status</th>
+          <th class="px-5 py-3 text-center w-32">Actions</th>
+        </tr>
+      </thead>
+
+      <tbody class="divide-y divide-gray-200">
+        {% for contact in contacts %}
+          <tr class="hover:bg-yellow-50 transition duration-150">
+            <td class="px-5 py-3 font-semibold text-[var(--gold)] whitespace-nowrap">
+              {{ contact.firstName }} {{ contact.lastName }}
+            </td>
+            <td class="px-5 py-3">{{ contact.phone }}</td>
+            <td class="px-5 py-3 truncate max-w-[150px]">{{ contact.email }}</td>
+            <td class="px-5 py-3 truncate max-w-[180px]">{{ contact.subject }}</td>
+            <td class="px-5 py-3 max-w-xs truncate italic text-gray-600">{{ contact.message }}</td>
+            <td class="px-5 py-3 text-gray-600">
+              {{ contact.submittedAt ? contact.submittedAt|date('M d, Y h:i A') : '—' }}
+            </td>
+            <td class="px-5 py-3">
+              {% if contact.status == 'New' %}
+                <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold">New</span>
+              {% elseif contact.status == 'Read' %}
+                <span class="px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs font-semibold">Read</span>
+              {% else %}
+                <span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold">{{ contact.status }}</span>
+              {% endif %}
+            </td>
+            <td class="px-5 py-3 text-center">
+              <div class="flex justify-center items-center space-x-2">
+                <a href="{{ path('app_admin_contacts_show', {'id': contact.id}) }}"
+                   class="inline-flex items-center justify-center px-3 py-1.5 bg-blue-600 text-white rounded-md text-xs font-semibold hover:bg-blue-700 transition">
+                  View
+                </a>
+                <form method="post"
+                      action="{{ path('app_admin_contacts_delete', {'id': contact.id}) }}"
+                      onsubmit="return confirm('Delete this message?');"
+                      class="inline-block">
+                  <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ contact.id) }}">
+                  <button type="submit"
+                          class="inline-flex items-center justify-center px-3 py-1.5 bg-red-600 text-white rounded-md text-xs font-semibold hover:bg-red-700 transition">
+                    Delete
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        {% else %}
+          <tr>
+            <td colspan="8" class="px-5 py-6 text-center text-gray-400 italic">
+              No messages found.
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

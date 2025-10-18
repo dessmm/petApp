@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Contact – LuxePaws{% endblock %}
+{% block title %}Book an Appointment – LuxePaws{% endblock %}
 
 {% block content %}
 <section class="max-w-3xl mx-auto my-12 bg-[var(--cream)] p-10 rounded-3xl shadow-lg">
-  <h1 class="text-3xl font-bold text-[var(--navy)] mb-6 text-center">Send us a message</h1>
+  <h1 class="text-3xl font-bold text-[var(--navy)] mb-6 text-center">Book an Appointment</h1>
 
   {# ✅ Success flash message #}
   {% for message in app.flashes('success') %}
@@ -13,81 +13,106 @@
     </div>
   {% endfor %}
 
-  {# ✅ Contact form #}
+  {# ✅ Appointment form #}
   {{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
+
     <div class="grid md:grid-cols-2 gap-4">
       <div>
-        {{ form_label(form.firstName, 'First name', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
-        {{ form_widget(form.firstName, {'attr': {'class': 'w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--gold)] outline-none'}}) }}
-        {{ form_errors(form.firstName) }}
+        {{ form_label(form.petName, 'Pet Name', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+        {{ form_widget(form.petName, {'attr': {'class': 'w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--gold)] outline-none'}}) }}
+        {{ form_errors(form.petName) }}
       </div>
+
       <div>
-        {{ form_label(form.lastName, 'Last name', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
-        {{ form_widget(form.lastName, {'attr': {'class': 'w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--gold)] outline-none'}}) }}
-        {{ form_errors(form.lastName) }}
+        {{ form_label(form.ownerName, 'Owner Name', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+        {{ form_widget(form.ownerName, {'attr': {'class': 'w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--gold)] outline-none'}}) }}
+        {{ form_errors(form.ownerName) }}
       </div>
     </div>
 
     <div>
-      {{ form_label(form.email, 'Email', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
-      {{ form_widget(form.email, {'attr': {'class': 'w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--gold)] outline-none'}}) }}
-      {{ form_errors(form.email) }}
-    </div>
-
-    <div>
-      {{ form_label(form.phone, 'Phone', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
-      {{ form_widget(form.phone, {'attr': {
+      {{ form_label(form.ownerEmail, 'Email', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+      {{ form_widget(form.ownerEmail, {'attr': {
         'class': 'w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--gold)] outline-none',
-        'placeholder': '09123456789 or +639123456789',
-        'pattern': '^(09|\\+639)\\d{9}$',
-        'title': 'Please enter a valid Philippine mobile number starting with 09 or +639'
+        'placeholder': 'your@email.com'
       }}) }}
-      {{ form_errors(form.phone) }}
+      {{ form_errors(form.ownerEmail) }}
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-4">
+      <div>
+        {{ form_label(form.appointmentDate, 'Date', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+        {{ form_widget(form.appointmentDate, {'attr': {'class': 'w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--gold)] outline-none'}}) }}
+        {{ form_errors(form.appointmentDate) }}
+      </div>
+
+      <div>
+        {{ form_label(form.appointmentTime, 'Time', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+        {{ form_widget(form.appointmentTime, {'attr': {'class': 'w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--gold)] outline-none'}}) }}
+        {{ form_errors(form.appointmentTime) }}
+      </div>
     </div>
 
     <div>
-      {{ form_label(form.subject, 'Subject', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
-      {{ form_widget(form.subject, {'attr': {'class': 'w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--gold)] outline-none'}}) }}
-      {{ form_errors(form.subject) }}
+      {{ form_label(form.service, 'Select Service', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+      {{ form_widget(form.service, {'attr': {'class': 'w-full p-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-[var(--gold)] outline-none'}}) }}
+      {{ form_errors(form.service) }}
     </div>
 
-    <div>
-      {{ form_label(form.message, 'Message', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
-      {{ form_widget(form.message, {'attr': {'class': 'w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--gold)] outline-none', 'rows': 5}}) }}
-      {{ form_errors(form.message) }}
+    {# ✅ Live booking summary #}
+    <div id="summaryBox" class="hidden mt-8 bg-white border border-[var(--gold)] rounded-xl shadow-sm p-5 text-[var(--navy)]">
+      <h2 class="text-lg font-semibold mb-2 text-center text-[var(--gold)]">Booking Summary</h2>
+      <ul class="space-y-2 text-sm text-gray-700">
+        <li><strong>Pet:</strong> <span id="summaryPet">—</span></li>
+        <li><strong>Owner:</strong> <span id="summaryOwner">—</span></li>
+        <li><strong>Email:</strong> <span id="summaryEmail">—</span></li>
+        <li><strong>Service:</strong> <span id="summaryService">—</span></li>
+        <li><strong>Date:</strong> <span id="summaryDate">—</span></li>
+        <li><strong>Time:</strong> <span id="summaryTime">—</span></li>
+      </ul>
     </div>
 
-{% if form.status is defined %}
-  <div class="pt-4">
-    {{ form_label(form.status, 'Status', {
-      'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}
-    }) }}
-    {{ form_widget(form.status, {
-      'attr': {
-        'class': 'w-full p-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-[var(--gold)] outline-none'
-      }
-    }) }}
-    {{ form_errors(form.status) }}
-  </div>
-{% endif %}
-
-
-    <div class="text-center pt-4">
+    <div class="text-center pt-6">
       <button type="submit" class="px-6 py-3 bg-[var(--gold)] text-[var(--navy)] font-semibold rounded-lg shadow hover:bg-yellow-400 transition">
-        Send Message
+        Confirm Booking
       </button>
     </div>
+
   {{ form_end(form) }}
 </section>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const phoneInput = document.querySelector('input[name="contact[phone]"]');
-    if (phoneInput) {
-      phoneInput.addEventListener('input', () => {
-        phoneInput.value = phoneInput.value.replace(/[^0-9+]/g, '');
-      });
-    }
-  });
+document.addEventListener('DOMContentLoaded', () => {
+  const fields = {
+    pet: document.querySelector('input[name="appointment[petName]"]'),
+    owner: document.querySelector('input[name="appointment[ownerName]"]'),
+    email: document.querySelector('input[name="appointment[ownerEmail]"]'),
+    date: document.querySelector('input[name="appointment[appointmentDate]"]'),
+    time: document.querySelector('input[name="appointment[appointmentTime]"]'),
+    service: document.querySelector('select[name="appointment[service]"]'),
+  };
+
+  const summaryBox = document.getElementById('summaryBox');
+  const summaryEls = {
+    pet: document.getElementById('summaryPet'),
+    owner: document.getElementById('summaryOwner'),
+    email: document.getElementById('summaryEmail'),
+    date: document.getElementById('summaryDate'),
+    time: document.getElementById('summaryTime'),
+    service: document.getElementById('summaryService'),
+  };
+
+  const updateSummary = () => {
+    let hasValue = false;
+    Object.keys(fields).forEach(key => {
+      const value = fields[key]?.value?.trim();
+      if (value) hasValue = true;
+      summaryEls[key].textContent = value || '—';
+    });
+    summaryBox.classList.toggle('hidden', !hasValue);
+  };
+
+  Object.values(fields).forEach(field => field?.addEventListener('input', updateSummary));
+});
 </script>
 {% endblock %}

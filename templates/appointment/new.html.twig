@@ -1,11 +1,100 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Appointment{% endblock %}
+{% block title %}Book an Appointment – LuxePaws{% endblock %}
 
 {% block content %}
-    <h2 class="text-2xl font-semibold mb-6">New Appointment</h2>
+<style>
+  .fade-section {
+    opacity: 0;
+    transform: translateY(25px);
+    transition: all 0.8s ease-out;
+  }
+  .fade-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
 
-    <div class="bg-white p-6 shadow rounded-lg">
-        {{ include('appointment/_form.html.twig', {'form': form}) }}
+<section class="relative bg-[var(--navy)] text-white py-16 overflow-hidden">
+  <div aria-hidden="true" class="absolute inset-x-0 -top-10 -z-10 transform-gpu overflow-hidden blur-3xl opacity-20">
+    <div class="mx-auto w-[70rem] h-[35rem] bg-gradient-to-tr from-[var(--gold)] to-indigo-600 rounded-full"></div>
+  </div>
+
+  <div class="max-w-2xl mx-auto text-center fade-section">
+    <h1 class="text-4xl font-bold text-[var(--gold)] mb-3">Book Your Pet’s Appointment</h1>
+    <p class="text-gray-300 text-base max-w-md mx-auto">
+      Give your furry friend the LuxePaws experience — safe, gentle, and stress-free grooming by professionals.
+    </p>
+  </div>
+</section>
+
+<section class="max-w-2xl mx-auto px-4 py-12 fade-section">
+  <div class="bg-white p-6 rounded-2xl shadow-md border border-[var(--gold)]/40">
+    <h2 class="text-xl font-bold text-[var(--navy)] mb-4 text-center">
+      Appointment Details
+    </h2>
+
+    {{ form_start(form, {'attr': {'class': 'space-y-4'}}) }}
+
+    <div>
+      {{ form_label(form.petName, 'Pet Name', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+      {{ form_widget(form.petName, {'attr': {'class': 'mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm'}}) }}
+      {{ form_errors(form.petName) }}
     </div>
+
+    <div>
+      {{ form_label(form.ownerName, 'Owner Name', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+      {{ form_widget(form.ownerName, {'attr': {'class': 'mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm'}}) }}
+      {{ form_errors(form.ownerName) }}
+    </div>
+
+    <div>
+      {{ form_label(form.ownerEmail, 'Email', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+      {{ form_widget(form.ownerEmail, {'attr': {'class': 'mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm'}}) }}
+      {{ form_errors(form.ownerEmail) }}
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        {{ form_label(form.appointmentDate, 'Date', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+        {{ form_widget(form.appointmentDate, {'attr': {'class': 'mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm'}}) }}
+        {{ form_errors(form.appointmentDate) }}
+      </div>
+      <div>
+        {{ form_label(form.appointmentTime, 'Time', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+        {{ form_widget(form.appointmentTime, {'attr': {'class': 'mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm'}}) }}
+        {{ form_errors(form.appointmentTime) }}
+      </div>
+    </div>
+
+    <div>
+      {{ form_label(form.service, 'Service', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+      {{ form_widget(form.service, {'attr': {'class': 'mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm'}}) }}
+      {{ form_errors(form.service) }}
+    </div>
+
+    <div class="pt-4">
+      <button class="w-full bg-[var(--gold)] text-[var(--navy)] font-semibold py-2.5 rounded-lg shadow hover:bg-yellow-400 transition text-sm">
+        {{ button_label|default('Confirm Booking') }}
+      </button>
+    </div>
+
+    {{ form_end(form) }}
+  </div>
+
+  <div class="mt-6 text-center">
+    <a href="{{ path('app_services_index') }}" class="text-[var(--navy)] font-medium hover:text-[var(--gold)] text-sm transition">
+      ← Back to Services
+    </a>
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const fadeSections = document.querySelectorAll('.fade-section');
+    fadeSections.forEach((section, i) => {
+      setTimeout(() => section.classList.add('fade-in'), i * 150);
+    });
+  });
+</script>
 {% endblock %}

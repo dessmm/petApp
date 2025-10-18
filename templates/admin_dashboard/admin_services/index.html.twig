@@ -1,0 +1,60 @@
+{% extends 'admin_dashboard/base.html.twig' %}
+
+{% block title %}Manage Services – Admin{% endblock %}
+
+{% block content %}
+<section class="p-8 bg-white rounded-2xl shadow-lg border border-gray-200">
+  <div class="flex items-center justify-between mb-8">
+    <div>
+      <h1 class="text-4xl font-extrabold text-[var(--navy)]">Services Management</h1>
+      <p class="text-sm text-gray-600 mt-1">Manage and update pet grooming and care services.</p>
+    </div>
+
+    <a href="{{ path('app_admin_services_new') }}"
+       class="inline-flex items-center px-5 py-2 bg-[var(--gold)] text-[var(--navy)] font-semibold rounded-lg shadow-md hover:bg-yellow-400 transition">
+      + Add Service
+    </a>
+  </div>
+
+  <div class="bg-[#f8f9fc] rounded-xl border border-gray-200 p-5 overflow-x-auto shadow-inner">
+    <table class="min-w-full text-sm text-gray-800 border-collapse">
+      <thead class="bg-[var(--gold)] text-[var(--navy)] uppercase font-semibold tracking-wide">
+        <tr>
+          <th class="px-5 py-3 text-left">Name</th>
+          <th class="px-5 py-3 text-left">Description</th>
+          <th class="px-5 py-3 text-left">Price</th>
+          <th class="px-5 py-3 text-center">Actions</th>
+        </tr>
+      </thead>
+
+      <tbody class="divide-y divide-gray-200">
+        {% for service in services %}
+          <tr class="hover:bg-yellow-50 transition duration-150">
+            <td class="px-5 py-3 font-semibold text-[var(--gold)]">{{ service.name }}</td>
+            <td class="px-5 py-3 text-gray-700">
+              {{ service.description|length > 80 ? service.description|slice(0,80) ~ '...' : service.description }}
+            </td>
+            <td class="px-5 py-3 font-medium text-[var(--navy)]">₱{{ service.price|number_format(2, '.', ',') }}</td>
+            <td class="px-5 py-3 text-center space-x-3">
+              <a href="{{ path('app_admin_services_show', {'id': service.id}) }}"
+                 class="inline-block px-3 py-1 bg-blue-600 text-white rounded-md text-xs font-semibold hover:bg-blue-700 transition">
+                View
+              </a>
+              <a href="{{ path('app_admin_services_edit', {'id': service.id}) }}"
+                 class="inline-block px-3 py-1 bg-yellow-400 text-[var(--navy)] rounded-md text-xs font-semibold hover:bg-yellow-300 transition">
+                Edit
+              </a>
+            </td>
+          </tr>
+        {% else %}
+          <tr>
+            <td colspan="4" class="px-5 py-6 text-center text-gray-400 italic">
+              No services found. Click “Add Service” to create one.
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}
