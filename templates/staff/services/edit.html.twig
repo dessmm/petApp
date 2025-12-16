@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Service{% endblock %}
+{% block styles %}
+<style>
+    header, footer { display: none !important; }
+    .layout { display: flex; gap: 1.5rem; align-items: flex-start; }
+    .flex-1 { flex: 1; }
+    .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 0.75rem; padding: 1.25rem; box-shadow: 0 6px 18px rgba(15,23,42,0.06); }
+</style>
+{% endblock %}
+{% block content %}
+<div class="layout">
+    {% include 'staff/_sidebar.html.twig' %}
+
+    <div class="flex-1">
+        <section class="card max-w-3xl mx-auto p-8">
+            <h1 class="text-3xl font-bold mb-4">Edit Service</h1>
+            <a href="{{ path('staff_services') }}" class="text-blue-500 underline mb-6 inline-block">← Back</a>
+
+            {{ include('staff/services/_form.html.twig', {'form': form, 'button_label': 'Update Service'}) }}
+        </section>
+    </div>
+</div>
+{% endblock %}

@@ -23,6 +23,10 @@ class Services
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     private ?string $price = null;
 
+    #[ORM\ManyToOne(targetEntity: \App\Entity\User::class, inversedBy: null)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?\App\Entity\User $owner = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -61,6 +65,17 @@ class Services
     {
         $this->price = $price;
 
+        return $this;
+    }
+
+    public function getOwner(): ?\App\Entity\User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?\App\Entity\User $owner): static
+    {
+        $this->owner = $owner;
         return $this;
     }
 

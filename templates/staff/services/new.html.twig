@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Add Service{% endblock %}
+{% block styles %}
+<style>
+    header, footer { display: none !important; }
+    .layout { display: flex; gap: 1.5rem; align-items: flex-start; }
+    .flex-1 { flex: 1; }
+    .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 0.75rem; padding: 1.25rem; box-shadow: 0 6px 18px rgba(15,23,42,0.06); }
+</style>
+{% endblock %}
+{% block content %}
+<div class="layout">
+    {% include 'staff/_sidebar.html.twig' %}
+
+    <div class="flex-1">
+        <section class="card max-w-2xl mx-auto p-6">
+          <div class="flex items-start justify-between mb-4">
+            <div>
+              <h1 class="text-2xl font-bold">Add a Service</h1>
+              <p class="text-sm text-gray-600 mt-1">Create a new service that customers can book. Keep the name short and the description concise.</p>
+            </div>
+            <div class="flex flex-col items-end gap-3">
+              <a href="{{ path('staff_services') }}" class="inline-flex items-center px-2 py-2 bg-[var(--gold)] text-[var(--navy)] font-semibold rounded-lg shadow hover:bg-yellow-400 transition">←Back</a>
+            </div>
+          </div>
+
+          {% for label, messages in app.flashes %}
+            {% for message in messages %}
+              <div class="mb-4 px-4 py-3 rounded bg-green-50 text-green-800">{{ message }}</div>
+            {% endfor %}
+          {% endfor %}
+
+          {{ include('staff/services/_form.html.twig', { 'form': form, 'button_label': 'Create Service' }) }}
+        </section>
+    </div>
+</div>
+{% endblock %}

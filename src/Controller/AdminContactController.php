@@ -56,7 +56,7 @@ final class AdminContactController extends AbstractController
     #[Route('/{id}/delete', name: 'app_admin_contacts_delete', methods: ['POST'])]
     public function delete(Request $request, Contact $contact, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $contact->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $contact->getId(), $request->request->get('_token'))) {
             $entityManager->remove($contact);
             $entityManager->flush();
             $this->addFlash('success', 'Message deleted successfully.');

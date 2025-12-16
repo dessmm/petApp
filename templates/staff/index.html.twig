@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Staff Dashboard – LuxePaws{% endblock %}
+
+{% block styles %}
+
+<style> header, footer { display: none !important; } .content { margin-left: calc(16rem + 1.5rem); padding: 2rem; } </style>
+
+{% endblock %}
+
+{% block content %}
+{% include 'staff/_sidebar.html.twig' %}
+
+<div class="content bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
+    <h1 class="text-3xl font-bold text-[var(--navy)] mb-6">Staff Dashboard</h1>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+    <div class="p-6 rounded-xl bg-yellow-100 border border-yellow-200 shadow">
+        <p class="text-gray-600 text-sm">Pending Appointments</p>
+        <p class="text-3xl font-bold text-[var(--navy)]">{{ pending|default(0) }}</p>
+    </div>
+
+    <div class="p-6 rounded-xl bg-green-100 border border-green-200 shadow">
+        <p class="text-gray-600 text-sm">Accepted</p>
+        <p class="text-3xl font-bold text-[var(--navy)]">{{ accepted|default(0) }}</p>
+    </div>
+
+</div>
+
+<h2 class="text-2xl font-bold text-[var(--navy)] mb-4">Today's Appointments</h2>
+<div class="bg-gray-50 border border-gray-200 rounded-xl p-6">
+
+    {% if todaysAppointments is empty %}
+        <p class="text-gray-500 italic">No appointments for today.</p>
+    {% else %}
+        <ul class="divide-y divide-gray-300">
+            {% for appt in todaysAppointments %}
+                <li class="py-4 flex justify-between items-center">
+                    <div>
+                        <p class="font-semibold text-[var(--navy)]">
+                            {{ appt.petName|default('N/A') }} ({{ appt.ownerName|default('N/A') }})
+                        </p>
+                        <p class="text-sm text-gray-600">
+                            {{ appt.appointmentTime ? appt.appointmentTime|date('h:i A') : 'N/A' }}
+                        </p>
+                    </div>
+
+                    <div class="flex gap-2">
+                        {% if appt.status == 'Pending' %}
+                            <a href="{{ path('staff_accept_appt', { id: appt.id }) }}"
+                               class="px-3 py-1 bg-green-600 text-white rounded-md text-sm hover:bg-green-700">
+                               Accept
+                            </a>
+                            <a href="{{ path('staff_decline_appt', { id: appt.id }) }}"
+                               class="px-3 py-1 bg-red-600 text-white rounded-md text-sm hover:bg-red-700">
+                               Decline
+                            </a>
+                        {% endif %}
+
+                        {% if appt.status == 'Accepted' %}
+                            <a href="{{ path('staff_mark_complete', { id: appt.id }) }}"
+                               class="px-3 py-1 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700">
+                               Complete
+                            </a>
+                        {% endif %}
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+</div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,11 @@
+<form method="post"
+      action="{{ path('app_admin_user_delete', {'id': user.id}) }}"
+      id="delete-user-form-{{ user.id }}">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete-user-' ~ user.id) }}">
+    <button type="button"
+            class="open-delete-modal inline-block px-5 py-2 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700 transition-shadow shadow-md"
+            data-user-id="{{ user.id }}"
+            data-username="{{ user.username }}">
+        Delete
+    </button>
+</form>

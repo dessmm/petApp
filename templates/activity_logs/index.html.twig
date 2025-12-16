@@ -1,0 +1,168 @@
+{% extends 'admin_dashboard/base.html.twig' %}
+
+{% block title %}Activity Logs – Admin{% endblock %}
+
+{% block styles %}
+<style>
+  header, footer { display: none !important; }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="p-6 bg-white rounded-2xl shadow-lg border border-gray-200">
+
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="text-3xl font-bold text-[var(--navy)]">Activity Logs</h1>
+      <p class="text-sm text-gray-600">View all admin and staff actions below.</p>
+    </div>
+  </div>
+
+  <div class="bg-[#f8f9fc] rounded-xl border border-gray-200 p-4 overflow-x-auto">
+    <table id="activityLogsTable" class="display min-w-full text-sm text-gray-800">
+      <thead class="bg-[var(--gold)] text-[var(--navy)] uppercase font-semibold tracking-wider">
+        <tr>
+          <th class="px-5 py-3 text-left">ID</th>
+          <th class="px-5 py-3 text-left">User</th>
+          <th class="px-5 py-3 text-left">Role</th>
+          <th class="px-5 py-3 text-left">Action</th>
+          <th class="px-5 py-3 text-left">Affected Data</th>
+          <th class="px-5 py-3 text-left">IP Address</th>
+          <th class="px-5 py-3 text-left">Date & Time</th>
+        </tr>
+      </thead>
+
+      <tbody class="divide-y divide-gray-200">
+        {% for log in logs %}
+        <tr class="hover:bg-yellow-50 transition duration-150">
+          <td class="px-5 py-3 font-semibold text-[var(--navy)]">{{ log.id }}</td>
+          <td class="px-5 py-3 text-gray-700">{{ log.userId ? log.userId.username : log.username }}</td>
+
+          <td class="px-5 py-3">
+            {% if log.role %}
+              {% if log.role matches '/ROLE_ADMIN/' %}
+                <span class="text-red-600 font-semibold">Admin</span>
+              {% elseif log.role matches '/ROLE_STAFF/' %}
+                <span class="text-blue-600 font-semibold">Staff</span>
+              {% else %}
+                <span class="text-gray-700">Customer</span>
+              {% endif %}
+            {% else %}
+              <span class="text-gray-400">-</span>
+            {% endif %}
+          </td>
+
+          <td class="px-5 py-3">
+            {% set actionLower = log.action ? log.action|lower : '' %}
+            {% if actionLower matches '/create/' %}
+              <span class="text-green-600 font-semibold">Created</span>
+            {% elseif actionLower matches '/delete/' %}
+              <span class="text-red-600 font-semibold">Deleted</span>
+            {% elseif actionLower matches '/login/' %}
+              <span class="text-blue-600 font-semibold">Login</span>
+            {% else %}
+              <span class="text-gray-700">{{ log.action ?: '-' }}</span>
+            {% endif %}
+          </td>
+
+          <td class="px-5 py-3 text-gray-700">{{ log.targetData ?: '-' }}</td>
+          <td class="px-5 py-3 text-gray-700">{{ log.ipAddress ?: '-' }}</td>
+          <td class="px-5 py-3 text-gray-600">{{ log.createdAt ? log.createdAt|date('M d, Y H:i:s') : '-' }}</td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="7" class="px-5 py-6 text-center text-gray-400 italic">
+            No activity logs found
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+</section>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.3.4/css/dataTables.dataTables.min.css">
+  <script src="https://cdn.datatables.net/2.3.4/js/dataTables.min.js"></script>
+
+  <style>
+    .dataTables_wrapper { margin-top: 1rem; }
+    .dataTables_filter input {
+      margin-left: 0.5rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 0.4rem 0.6rem;
+      background: #ffffff;
+      color: #1e293b;
+      outline: none;
+    }
+    .dataTables_filter input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 2px rgba(212,175,55,0.3);
+    }
+    .dataTables_paginate .current {
+      background: var(--gold) !important;
+      color: var(--navy) !important;
+      border-radius: 6px;
+    }
+  </style>
+
+  <script>
+    // Robust loader for Activity Logs DataTable
+    document.addEventListener('DOMContentLoaded', function () {
+      function loadScript(url){
+        return new Promise(function(resolve, reject){
+          var s = document.createElement('script');
+          s.src = url;
+          s.async = true;
+          s.onload = resolve;
+          s.onerror = function(e){ reject(new Error('Failed to load ' + url)); };
+          document.head.appendChild(s);
+        });
+      }
+
+      (async function(){
+        try {
+          if (!window.jQuery) {
+            console.info('jQuery missing — loading CDN...');
+            await loadScript('https://code.jquery.com/jquery-3.7.1.min.js');
+          }
+          if (!($.fn && $.fn.dataTable)) {
+            console.info('DataTables missing — loading CDN...');
+            await loadScript('https://cdn.datatables.net/2.3.4/js/dataTables.min.js');
+          }
+
+          if ($.fn && $.fn.dataTable) {
+            try {
+              if ($.fn.dataTable.isDataTable('#activityLogsTable')) {
+                $('#activityLogsTable').DataTable().destroy();
+              }
+              $('#activityLogsTable').DataTable({
+                pageLength: 10,
+                ordering: true,
+                responsive: true,
+                autoWidth: false,
+                order: [[6, 'desc']], // sort by Date & Time descending
+                language: {
+                  search: 'Search',
+                  lengthMenu: 'Show _MENU_ per page',
+                  info: 'Showing _START_ to _END_ of _TOTAL_ logs',
+                  paginate: { previous: 'Prev', next: 'Next' }
+                }
+              });
+            } catch (initErr) {
+              console.error('DataTables initialization error:', initErr);
+            }
+          } else {
+            console.error('jQuery/DataTables not available after loading attempts');
+          }
+        } catch (err) {
+          console.error('Error ensuring DataTables scripts:', err);
+        }
+      })();
+    });
+  </script>
+{% endblock %}

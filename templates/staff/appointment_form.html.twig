@@ -1,0 +1,43 @@
+{% extends 'staff/index.html.twig' %}
+
+{% block title %}{{ appointment is defined ? 'Edit' : 'Create' }} Appointment – LuxePaws{% endblock %}
+
+{% block content %}
+<h1 class="text-3xl font-bold text-[var(--navy)] mb-6">{{ appointment is defined ? 'Edit' : 'Create' }} Appointment</h1>
+
+<form method="POST" class="space-y-4">
+    <div>
+        <label class="block font-semibold mb-1">Pet Name</label>
+        <input type="text" name="petName" value="{{ appointment.petName|default('') }}" class="w-full border rounded p-2" required>
+    </div>
+
+    <div>
+        <label class="block font-semibold mb-1">Owner Name</label>
+        <input type="text" name="ownerName" value="{{ appointment.ownerName|default('') }}" class="w-full border rounded p-2" required>
+    </div>
+
+    <div>
+        <label class="block font-semibold mb-1">Date</label>
+        <input type="date" name="appointmentDate" value="{{ appointment.appointmentDate ? appointment.appointmentDate|date('Y-m-d') : '' }}" class="w-full border rounded p-2" required>
+    </div>
+
+    <div>
+        <label class="block font-semibold mb-1">Time</label>
+        <input type="time" name="appointmentTime" value="{{ appointment.appointmentTime ? appointment.appointmentTime|date('H:i') : '' }}" class="w-full border rounded p-2" required>
+    </div>
+
+    <div>
+        <label class="block font-semibold mb-1">Status</label>
+        <select name="status" class="w-full border rounded p-2">
+            <option value="Pending" {% if appointment.status == 'Pending' %}selected{% endif %}>Pending</option>
+            <option value="Accepted" {% if appointment.status == 'Accepted' %}selected{% endif %}>Accepted</option>
+            <option value="Declined" {% if appointment.status == 'Declined' %}selected{% endif %}>Declined</option>
+            <option value="Completed" {% if appointment.status == 'Completed' %}selected{% endif %}>Completed</option>
+        </select>
+    </div>
+
+    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+        {{ appointment is defined ? 'Update' : 'Create' }}
+    </button>
+</form>
+{% endblock %}

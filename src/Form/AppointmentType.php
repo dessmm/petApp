@@ -12,6 +12,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\GreaterThan;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use App\Entity\Appointment;
+use App\Entity\User;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType as DoctrineEntityType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class AppointmentType extends AbstractType
@@ -69,12 +71,18 @@ class AppointmentType extends AbstractType
                 'choice_value' => 'id',
                 'attr' => ['id' => 'serviceSelect', 'class' => 'mt-1 w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2'],
             ]);
+
+            // NOTE: staff selection removed for public booking — staff will claim appointments from their panel.
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Appointment::class,
-        ]);
+            'csrf_protection' => true,
+            'csrf_field_name' => '_token',
+            'csrf_token_id' => 'appointment_item', // a unique ID for this form
+    ]);
     }
+
 }

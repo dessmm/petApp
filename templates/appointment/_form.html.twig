@@ -1,55 +1,58 @@
 {{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
 
 <section class="bg-[#1E2435] p-6 rounded-2xl shadow-md border border-gray-700">
-  <h2 class="text-2xl font-bold text-white mb-4">Appointment Details</h2>
+    <h2 class="text-2xl font-bold text-white mb-4">Appointment Details</h2>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <div>
-      {{ form_label(form.petName, 'Pet Name', {'label_attr': {'class': 'block text-sm font-medium text-gray-300'}}) }}
-      {{ form_widget(form.petName, {'attr': {'class': 'mt-1 w-full rounded-lg bg-[#2B3147] border-gray-600 text-gray-100 p-2'}}) }}
-      {{ form_errors(form.petName) }}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+            {{ form_label(form.petName, 'Pet Name', {'label_attr': {'class': 'block text-sm font-medium text-gray-300'}}) }}
+            {{ form_widget(form.petName, {'attr': {'class': 'mt-1 w-full rounded-lg bg-[#2B3147] border-gray-600 text-gray-100 p-2'}}) }}
+            {{ form_errors(form.petName) }}
+        </div>
+
+        <div>
+            {{ form_label(form.ownerName, 'Owner Name', {'label_attr': {'class': 'block text-sm font-medium text-gray-300'}}) }}
+            {{ form_widget(form.ownerName, {'attr': {'class': 'mt-1 w-full rounded-lg bg-[#2B3147] border-gray-600 text-gray-100 p-2'}}) }}
+            {{ form_errors(form.ownerName) }}
+        </div>
+
+        <div>
+            {{ form_label(form.ownerEmail, 'Owner Email', {'label_attr': {'class': 'block text-sm font-medium text-gray-300'}}) }}
+            {{ form_widget(form.ownerEmail, {'attr': {'class': 'mt-1 w-full rounded-lg bg-[#2B3147] border-gray-600 text-gray-100 p-2'}}) }}
+            {{ form_errors(form.ownerEmail) }}
+        </div>
+
+        <div>
+            {{ form_label(form.appointmentDate, 'Date', {'label_attr': {'class': 'block text-sm font-medium text-gray-300'}}) }}
+            {{ form_widget(form.appointmentDate, {'attr': {'class': 'mt-1 w-full rounded-lg bg-[#2B3147] border-gray-600 text-gray-100 p-2'}}) }}
+            {{ form_errors(form.appointmentDate) }}
+        </div>
+
+        <div>
+            {{ form_label(form.appointmentTime, 'Time', {'label_attr': {'class': 'block text-sm font-medium text-gray-300'}}) }}
+            {{ form_widget(form.appointmentTime, {'attr': {'class': 'mt-1 w-full rounded-lg bg-[#2B3147] border-gray-600 text-gray-100 p-2'}}) }}
+            {{ form_errors(form.appointmentTime) }}
+        </div>
+
+        <div>
+            {{ form_label(form.service, 'Service', {'label_attr': {'class': 'block text-sm font-medium text-gray-300'}}) }}
+            {{ form_widget(form.service, {'attr': {'class': 'mt-1 w-full rounded-lg bg-[#2B3147] border-gray-600 text-gray-100 p-2'}}) }}
+            {{ form_errors(form.service) }}
+        </div>
     </div>
 
-    <div>
-      {{ form_label(form.ownerName, 'Owner Name', {'label_attr': {'class': 'block text-sm font-medium text-gray-300'}}) }}
-      {{ form_widget(form.ownerName, {'attr': {'class': 'mt-1 w-full rounded-lg bg-[#2B3147] border-gray-600 text-gray-100 p-2'}}) }}
-      {{ form_errors(form.ownerName) }}
-    </div>
+    {# CSRF token hidden field #}
+    {{ form_row(form._token) }}
 
-    <div>
-      {{ form_label(form.ownerEmail, 'Owner Email', {'label_attr': {'class': 'block text-sm font-medium text-gray-300'}}) }}
-      {{ form_widget(form.ownerEmail, {'attr': {'class': 'mt-1 w-full rounded-lg bg-[#2B3147] border-gray-600 text-gray-100 p-2'}}) }}
-      {{ form_errors(form.ownerEmail) }}
+    <div class="mt-6 flex justify-end space-x-3">
+        <a href="{{ path('app_admin_appointments_index') }}"
+           class="px-4 py-2 bg-gray-700 text-gray-200 rounded-lg hover:bg-gray-600 transition">
+            Cancel
+        </a>
+        <button class="px-4 py-2 bg-[var(--gold)] text-[var(--navy)] font-semibold rounded-lg shadow hover:bg-yellow-400 transition">
+            {{ button_label|default('Save Changes') }}
+        </button>
     </div>
-
-    <div>
-      {{ form_label(form.appointmentDate, 'Date', {'label_attr': {'class': 'block text-sm font-medium text-gray-300'}}) }}
-      {{ form_widget(form.appointmentDate) }}
-      {{ form_errors(form.appointmentDate) }}
-    </div>
-
-    <div>
-      {{ form_label(form.appointmentTime, 'Time', {'label_attr': {'class': 'block text-sm font-medium text-gray-300'}}) }}
-      {{ form_widget(form.appointmentTime) }}
-      {{ form_errors(form.appointmentTime) }}
-    </div>
-
-    <div>
-      {{ form_label(form.service, 'Service', {'label_attr': {'class': 'block text-sm font-medium text-gray-300'}}) }}
-      {{ form_widget(form.service, {'attr': {'class': 'mt-1 w-full rounded-lg bg-[#2B3147] border-gray-600 text-gray-100 p-2'}}) }}
-      {{ form_errors(form.service) }}
-    </div>
-  </div>
-
-  <div class="mt-6 flex justify-end space-x-3">
-    <a href="{{ path('app_admin_appointments_index') }}"
-       class="px-4 py-2 bg-gray-700 text-gray-200 rounded-lg hover:bg-gray-600 transition">
-      Cancel
-    </a>
-    <button class="px-4 py-2 bg-[var(--gold)] text-[var(--navy)] font-semibold rounded-lg shadow hover:bg-yellow-400 transition">
-      {{ button_label|default('Save Changes') }}
-    </button>
-  </div>
 </section>
 
 {{ form_end(form) }}

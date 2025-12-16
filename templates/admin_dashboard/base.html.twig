@@ -8,6 +8,11 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
+  {# Admin-specific favicon #}
+  <link rel="icon" href="{{ asset('favicon-admin.svg') }}" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="{{ asset('favicon-admin.svg') }}">
+  <meta name="theme-color" content="#1C1F3A">
+
   <link rel="stylesheet" href="https://cdn.datatables.net/2.3.4/css/dataTables.dataTables.min.css">
 
   <style>
@@ -34,22 +39,29 @@
 </head>
 
 <body class="flex min-h-screen">
-  <aside class="w-64 bg-[var(--navy)] text-white flex flex-col shadow-lg">
+  <aside class="w-64 bg-[var(--navy)] text-white flex flex-col shadow-lg fixed top-0 left-0 h-screen z-40">
     <div class="p-5 text-2xl font-bold border-b border-white/20">
       Admin Panel
     </div>
     <nav class="flex-1 p-4 space-y-2 text-sm">
       <a href="{{ path('app_admin_dashboard') }}" class="block px-3 py-2 rounded hover:bg-[var(--gold)] hover:text-[var(--navy)] transition">Dashboard</a>
-      <a href="{{ path('app_admin_appointments_index') }}" class="block px-3 py-2 rounded hover:bg-[var(--gold)] hover:text-[var(--navy)] transition">Appointments</a>
-      <a href="{{ path('app_admin_services_index') }}" class="block px-3 py-2 rounded hover:bg-[var(--gold)] hover:text-[var(--navy)] transition">Services</a>
-      <a href="{{ path('app_admin_contacts_index') }}" class="block px-3 py-2 rounded hover:bg-[var(--gold)] hover:text-[var(--navy)] transition">Messages</a>
+      {# <a href="{{ path('app_admin_appointments_index') }}" class="block px-3 py-2 rounded hover:bg-[var(--gold)] hover:text-[var(--navy)] transition">Appointments</a> #}
+      {# <a href="{{ path('app_admin_services_index') }}" class="block px-3 py-2 rounded hover:bg-[var(--gold)] hover:text-[var(--navy)] transition">Services</a> #}
+      {# <a href="{{ path('app_admin_contacts_index') }}" class="block px-3 py-2 rounded hover:bg-[var(--gold)] hover:text-[var(--navy)] transition">Messages</a> #}
+      <a href="{{ path('app_admin_user_index') }}" class="block px-3 py-2 rounded hover:bg-[var(--gold)] hover:text-[var(--navy)] transition">User Accounts</a>
+      <a href="{{ path('app_admin_account_profile') }}" class="block px-3 py-2 rounded hover:bg-[var(--gold)] hover:text-[var(--navy)] transition">My Account</a>
+      {# <a href="{{ path('app_admin_account_change_password') }}" class="block px-3 py-2 rounded hover:bg-[var(--gold)] hover:text-[var(--navy)] transition">Change Password</a> #}
+      <a href="{{ path('app_activity_logs') }}" class="block px-3 py-2 rounded hover:bg-[var(--gold)] hover:text-[var(--navy)] transition">Activity Logs</a>
+      <form method="post" action="{{ path('app_logout') }}">
+        <button type="submit" class="w-full text-left px-3 py-2 rounded hover:bg-[var(--gold)] hover:text-[var(--navy)] transition">Logout</button>
+      </form>
     </nav>
     <div class="p-4 border-t border-white/20 text-sm">
       <a href="{{ path('app_home') }}" class="hover:text-[var(--gold)] transition">← Back to Site</a>
     </div>
   </aside>
 
-  <main class="flex-1 p-8 overflow-y-auto">
+  <main class="flex-1 p-8 overflow-y-auto ml-64">
     {% block content %}{% endblock %}
   </main>
 

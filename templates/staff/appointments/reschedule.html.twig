@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Reschedule Appointment{% endblock %}
+{% block styles %}
+<style>
+    header, footer { display: none !important; }
+    .layout { display: flex; gap: 1.5rem; align-items: flex-start; }
+    .flex-1 { flex: 1; }
+    .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 0.75rem; padding: 1.25rem; box-shadow: 0 6px 18px rgba(15,23,42,0.06); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="layout">
+    {% include 'staff/_sidebar.html.twig' %}
+
+    <div class="flex-1">
+        <section class="card max-w-2xl mx-auto p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h1 class="text-2xl font-bold">Reschedule Appointment</h1>
+                    <p class="text-sm text-gray-600 mt-1">Change the date and time for the selected appointment.</p>
+                </div>
+                <div class="text-sm text-gray-500">
+                    <p>Appointment ID: <span class="font-medium">{{ appointment.id }}</span></p>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <p class="font-semibold">Pet: <span class="text-gray-700">{{ appointment.petName|default('N/A') }}</span></p>
+                <p class="text-sm text-gray-600">Service: {{ appointment.service ? appointment.service.name : 'N/A' }}</p>
+                <p class="text-sm text-gray-600">Current: {{ appointment.appointmentDate ? appointment.appointmentDate|date('M d, Y') : 'N/A' }} • {{ appointment.appointmentTime ? appointment.appointmentTime|date('h:i A') : 'N/A' }}</p>
+            </div>
+
+            {{ form_start(form) }}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        {{ form_label(form.appointmentDate) }}
+                        {{ form_widget(form.appointmentDate) }}
+                        {{ form_errors(form.appointmentDate) }}
+                    </div>
+                    <div>
+                        {{ form_label(form.appointmentTime) }}
+                        {{ form_widget(form.appointmentTime) }}
+                        {{ form_errors(form.appointmentTime) }}
+                    </div>
+                </div>
+
+                <div class="text-center mt-6">
+                    <button type="submit" class="px-6 py-3 bg-[var(--gold)] text-[var(--navy)] rounded">Save changes</button>
+                    <a href="{{ path('staff_appointments') }}" class="ml-4 text-gray-600 underline">Cancel</a>
+                </div>
+            {{ form_end(form) }}
+        </section>
+    </div>
+</div>
+{% endblock %}

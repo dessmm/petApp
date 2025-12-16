@@ -6,6 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}LuxePaws{% endblock %}</title>
 
+  {# Favicons - placed in public/ #}
+  <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
+  <link rel="alternate icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
+  <meta name="theme-color" content="#D4AF37">
+
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
 
@@ -60,10 +65,23 @@
 
         {% set hidden_routes = ['app_appointment_index','app_appointment_new', 'app_appointment_edit', 'app_appointment_show'] %}
         {% if app.request.attributes.get('_route') not in hidden_routes %}
-          <a href="{{ path('app_appointment_new') }}"
-             class="px-4 py-1.5 bg-[var(--gold)] text-[var(--navy)] rounded-lg shadow hover:bg-yellow-400 transition text-sm font-semibold flex items-center">
-             Book Now
-          </a>
+          <div class="flex items-center space-x-3">
+            <a href="{{ path('app_appointment_new') }}"
+               class="px-4 py-1.5 bg-[var(--gold)] text-[var(--navy)] rounded-lg shadow hover:bg-yellow-400 transition text-sm font-semibold flex items-center">
+               Book Now
+            </a>
+
+            {# Role-aware dashboard shortcut: Admin -> admin dashboard, Staff -> staff dashboard #}
+            {% if is_granted('ROLE_ADMIN') %}
+              <a href="{{ path('app_admin_dashboard') }}" class="px-3 py-1.5 bg-[var(--gold)] text-[var(--navy)] rounded-lg shadow hover:bg-yellow-400 transition text-sm font-medium">
+                Admin Dashboard
+              </a>
+            {% elseif is_granted('ROLE_STAFF') %}
+              <a href="{{ path('staff_dashboard') }}" class="px-3 py-1.5 bg-[var(--gold)] text-[var(--navy)] rounded-lg shadow hover:bg-yellow-400 transition text-sm font-medium">
+                Staff Dashboard
+              </a>
+            {% endif %}
+          </div>
         {% endif %}
       </nav>
     </div>

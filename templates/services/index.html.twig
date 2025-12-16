@@ -13,6 +13,14 @@
     </p>
   </div>
 
+  <div class="max-w-7xl mx-auto px-6 mb-6 flex justify-end">
+    {% if is_granted('ROLE_STAFF') %}
+      <a href="{{ path('app_services_new') }}" class="px-4 py-2 bg-[var(--gold)] text-[var(--navy)] font-semibold rounded-lg shadow hover:bg-yellow-400 transition">
+        Add Service
+      </a>
+    {% endif %}
+  </div>
+
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
     <style>
    .service-card {

@@ -17,7 +17,7 @@
   </div>
 
   <div class="bg-[#f8f9fc] rounded-xl border border-gray-200 p-6 overflow-x-auto shadow-inner">
-    <table class="min-w-full text-sm text-gray-800 border-collapse">
+    <table id="messagesTable" class="display min-w-full text-sm text-gray-800 border-collapse">
       <thead class="bg-[var(--gold)] text-[var(--navy)] uppercase font-semibold tracking-wide">
         <tr>
           <th class="px-5 py-3 text-left">Name</th>
@@ -59,6 +59,10 @@
                    class="inline-flex items-center justify-center px-3 py-1.5 bg-blue-600 text-white rounded-md text-xs font-semibold hover:bg-blue-700 transition">
                   View
                 </a>
+                <form method="post" action="{{ path('app_admin_contacts_forward', {'id': contact.id}) }}" class="inline-block">
+                  <input type="hidden" name="_token" value="{{ csrf_token('forward' ~ contact.id) }}">
+                  <button type="submit" class="inline-flex items-center justify-center px-3 py-1.5 bg-indigo-600 text-white rounded-md text-xs font-semibold hover:bg-indigo-700 transition">Forward to Staff</button>
+                </form>
                 <form method="post"
                       action="{{ path('app_admin_contacts_delete', {'id': contact.id}) }}"
                       onsubmit="return confirm('Delete this message?');"
@@ -83,4 +87,46 @@
     </table>
   </div>
 </section>
+
+{% block javascripts %}
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.3.4/css/dataTables.dataTables.min.css">
+  <script src="https://cdn.datatables.net/2.3.4/js/dataTables.min.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      if ($.fn.dataTable.isDataTable('#messagesTable')) {
+        $('#messagesTable').DataTable().destroy();
+      }
+
+      const table = new DataTable('#messagesTable', {
+        pageLength: 8,
+        ordering: true,
+        responsive: true,
+        autoWidth: false,
+        language: {
+          search: "🔍 Search:",
+          lengthMenu: "Show _MENU_ messages per page",
+          info: "Showing _START_–_END_ of _TOTAL_ messages",
+          paginate: { previous: "← Prev", next: "Next →" }
+        }
+      });
+
+      const searchBox = document.querySelector(".dataTables_filter input");
+      if (searchBox) {
+        searchBox.classList.add(
+          "border", "border-gray-300", "rounded-md", "px-3", "py-2",
+          "focus:ring-2", "focus:ring-[var(--gold)]", "outline-none", "ml-2"
+        );
+      }
+
+      const lengthSelect = document.querySelector(".dataTables_length select");
+      if (lengthSelect) {
+        lengthSelect.classList.add(
+          "border", "border-gray-300", "rounded-md", "px-2", "py-1",
+          "bg-white", "text-[var(--navy)]", "outline-none"
+        );
+      }
+    });
+  </script>
+{% endblock %}
 {% endblock %}

@@ -35,12 +35,30 @@ class Appointment
     private ?\DateTime $appointmentTime = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    // Make service nullable and set ON DELETE to SET NULL so services can be removed
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Services $service = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
     private ?string $price = null;
+    
+    #[ORM\Column(length: 32)]
+    private ?string $status = 'Pending';
 
+    #[ORM\ManyToOne(inversedBy: 'appointments')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?User $staff = null;
+    
+    public function getStatus(): ?string
+    {  
+    return $this->status;
+    }
+
+    public function setStatus(string $status): self
+    {
+    $this->status = $status;
+    return $this;
+    }
 
 
     public function getId(): ?int
@@ -128,6 +146,18 @@ class Appointment
     public function setPrice(?string $price): static
     {
         $this->price = $price;
+
+        return $this;
+    }
+
+    public function getStaff(): ?User
+    {
+        return $this->staff;
+    }
+
+    public function setStaff(?User $staff): static
+    {
+        $this->staff = $staff;
 
         return $this;
     }

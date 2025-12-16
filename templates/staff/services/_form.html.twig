@@ -1,0 +1,29 @@
+{{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
+
+<div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+    <div class="md:col-span-8">
+        {{ form_label(form.name) }}
+        {{ form_widget(form.name, {'attr': {'class': 'w-full p-3 border rounded focus:ring-2 focus:ring-[var(--gold)]'}}) }}
+        {{ form_errors(form.name) }}
+    </div>
+
+    <div class="md:col-span-4">
+        {{ form_label(form.price) }}
+        {{ form_widget(form.price, {'attr': {'class': 'w-full p-3 border rounded focus:ring-2 focus:ring-[var(--gold)]', 'placeholder': 'e.g. 1000.00'}}) }}
+        {{ form_errors(form.price) }}
+    </div>
+
+    <div class="md:col-span-12">
+        {{ form_label(form.description) }}
+        {{ form_widget(form.description, {'attr': {'class': 'w-full p-3 border rounded focus:ring-2 focus:ring-[var(--gold)]', 'rows': 5}}) }}
+        {{ form_errors(form.description) }}
+    </div>
+</div>
+
+<div class="text-center pt-4">
+    <button type="submit" class="px-6 py-3 bg-[var(--gold)] text-[var(--navy)] rounded shadow hover:bg-yellow-400">
+        {{ button_label|default('Save') }}
+    </button>
+</div>
+
+{{ form_end(form) }}

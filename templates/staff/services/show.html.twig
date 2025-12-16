@@ -1,0 +1,124 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Service Details{% endblock %}
+{% block styles %}
+<style>
+    header, footer { display: none !important; }
+    .layout { display: flex; gap: 1.5rem; align-items: flex-start; }
+    .flex-1 { flex: 1; }
+    .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 0.75rem; padding: 1.25rem; box-shadow: 0 6px 18px rgba(15,23,42,0.06); }
+</style>
+{% endblock %}
+{% block scripts %}
+  {{ parent() }}
+  <div id="confirmModal" class="hidden fixed inset-0 z-50 items-center justify-center bg-black bg-opacity-50">
+    <div class="bg-white rounded-lg p-6 w-11/12 max-w-md mx-auto shadow-lg">
+      <h3 id="confirmModalTitle" class="text-lg font-semibold text-gray-800">Confirm delete</h3>
+      <p id="confirmModalMessage" class="mt-2 text-sm text-gray-700">Are you sure you want to delete this item?</p>
+      <div class="mt-4 flex justify-end gap-2">
+        <button id="confirmCancel" class="px-3 py-1 bg-gray-200 rounded text-sm">Cancel</button>
+        <button id="confirmOk" class="px-3 py-1 bg-red-600 text-white rounded text-sm">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      let modal = document.getElementById('confirmModal');
+      let msg = document.getElementById('confirmModalMessage');
+      let btnOk = document.getElementById('confirmOk');
+      let btnCancel = document.getElementById('confirmCancel');
+      let currentForm = null;
+
+      function showModal(text){
+        msg.textContent = text;
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      }
+      function hideModal(){
+        modal.classList.remove('flex');
+        modal.classList.add('hidden');
+        currentForm = null;
+      }
+
+      document.querySelectorAll('.js-confirm-delete').forEach(function(form){
+        form.addEventListener('submit', function(e){
+          e.preventDefault();
+          currentForm = form;
+          const name = form.dataset.itemName || 'this item';
+          showModal('Are you sure you want to delete "' + name + '"? This action cannot be undone.');
+        });
+      });
+
+      btnCancel.addEventListener('click', function(){ hideModal(); });
+      btnOk.addEventListener('click', function(){
+        if(currentForm){ currentForm.submit(); }
+      });
+
+      // close on Escape
+      document.addEventListener('keydown', function(e){ if(e.key === 'Escape'){ hideModal(); } });
+
+      // click outside to close
+      modal.addEventListener('click', function(e){ if(e.target === modal){ hideModal(); } });
+    })();
+  </script>
+{% endblock %}
+{% block content %}
+<div class="layout">
+    {% include 'staff/_sidebar.html.twig' %}
+
+    <div class="flex-1">
+        <section class="card p-8">
+          <div class="flex items-center justify-between mb-8">
+            <div>
+              <h1 class="text-4xl font-extrabold text-[var(--navy)]">Service Details</h1>
+              <p class="text-sm text-gray-600 mt-1">View complete information about this service.</p>
+            </div>
+
+            <a href="{{ path('staff_services') }}"
+               class="px-4 py-2 bg-[var(--gold)] text-[var(--navy)] font-semibold rounded-lg shadow hover:bg-yellow-400 transition">
+              ← Back to Services
+            </a>
+          </div>
+
+          <div class="bg-[#f8f9fc] rounded-xl border border-gray-200 shadow-inner p-6 max-w-3xl mx-auto">
+            <table class="min-w-full text-sm text-gray-800">
+              <tbody class="divide-y divide-gray-200">
+                <tr>
+                  <th class="py-3 px-5 text-left font-semibold text-[var(--navy)] w-1/3">ID</th>
+                  <td class="py-3 px-5 text-gray-700">{{ service.id }}</td>
+                </tr>
+                <tr>
+                  <th class="py-3 px-5 text-left font-semibold text-[var(--navy)]">Name</th>
+                  <td class="py-3 px-5 text-[var(--gold)] font-semibold">{{ service.name }}</td>
+                </tr>
+                <tr>
+                  <th class="py-3 px-5 text-left font-semibold text-[var(--navy)]">Description</th>
+                  <td class="py-3 px-5 text-gray-700 leading-relaxed">{{ service.description }}</td>
+                </tr>
+                <tr>
+                  <th class="py-3 px-5 text-left font-semibold text-[var(--navy)]">Price</th>
+                  <td class="py-3 px-5 text-[var(--gold)] font-semibold">₱{{ service.price|number_format(2, '.', ',') }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="mt-8 flex justify-center gap-4">
+            {% set canManage = service.owner is not null and app.user is not null and service.owner.id == app.user.id and not ('ROLE_ADMIN' in service.owner.roles) %}
+            {% if canManage %}
+              <a href="{{ path('staff_services_edit', {'id': service.id}) }}"
+                 class="px-5 py-2 bg-yellow-400 text-[var(--navy)] font-semibold rounded-lg shadow hover:bg-yellow-300 transition">
+                Edit
+              </a>
+
+              <form method="post" action="{{ path('staff_services_delete', {'id': service.id}) }}" class="js-confirm-delete" data-item-name="{{ service.name }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete-service-' ~ service.id) }}">
+                <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition">Delete</button>
+              </form>
+            {% endif %}
+          </div>
+        </section>
+    </div>
+</div>
+{% endblock %}

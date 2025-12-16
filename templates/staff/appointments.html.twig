@@ -1,0 +1,126 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}My Appointments – LuxePaws{% endblock %}
+
+{% block styles %}
+<style>
+    header, footer { display: none !important; }
+    .layout { display: flex; gap: 1.5rem; }
+    .panel { flex: 1; padding: 2rem; background: #fff; border: 1px solid #e5e7eb; border-radius: 1rem; box-shadow: 0 6px 18px rgba(16,24,40,0.04); }
+    .appt-card { display: flex; gap: 1rem; align-items: center; padding: 1rem; border-radius: 0.75rem; background: #fafafa; }
+    .appt-left { flex: 1; }
+    .status-badge { display: inline-block; padding: 0.25rem 0.5rem; border-radius: 999px; font-weight: 600; font-size: 0.8rem; }
+    .status-pending { background: #fff7ed; color: #b45309; border: 1px solid #fde68a; }
+    .status-accepted { background: #ecfdf5; color: #065f46; border: 1px solid #bbf7d0; }
+    .status-declined { background: #fff1f2; color: #b91c1c; border: 1px solid #fecaca; }
+    .status-completed { background: #eff6ff; color: #1e3a8a; border: 1px solid #bfdbfe; }
+    .actions form { display: inline-block; margin: 0 0.25rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="layout">
+    {% include 'staff/_sidebar.html.twig' %}
+
+    <div class="panel">
+        <h1 class="text-3xl font-bold text-[var(--navy)] mb-4">My Appointments</h1>
+
+        {# Assigned to current staff #}
+        {% if assignedAppointments is defined and assignedAppointments is not empty %}
+            <h2 class="text-xl font-semibold mb-3">Assigned to you</h2>
+            <div class="space-y-4 mb-6">
+                {% for appt in assignedAppointments %}
+                    <div class="appt-card">
+                        <div class="appt-left">
+                            <p class="font-semibold text-[var(--navy)]">{{ appt.petName|default('N/A') }} — <span class="text-sm text-gray-600">{{ appt.service ? appt.service.name : 'Service' }}</span></p>
+                            <p class="text-sm text-gray-600">{{ appt.appointmentDate ? appt.appointmentDate|date('M d, Y') : 'N/A' }} • {{ appt.appointmentTime ? appt.appointmentTime|date('h:i A') : 'N/A' }}</p>
+                            <p class="text-sm text-gray-500">Owner: {{ appt.ownerName|default('N/A') }} • {{ appt.ownerEmail|default('N/A') }}</p>
+                        </div>
+
+                        <div class="text-right">
+                            {% set status = appt.status|default('Pending') %}
+                            <div style="margin-bottom:0.5rem">
+                                {% if status == 'Pending' %}
+                                    <span class="status-badge status-pending">Pending</span>
+                                {% elseif status == 'Accepted' %}
+                                    <span class="status-badge status-accepted">Accepted</span>
+                                {% elseif status == 'Declined' %}
+                                    <span class="status-badge status-declined">Declined</span>
+                                {% else %}
+                                    <span class="status-badge status-completed">{{ status }}</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="actions">
+                                {# For assigned appointments allow complete, decline (return to pool) and delete #}
+                                {% if appt.staff is defined and appt.staff and appt.staff.id == app.user.id %}
+                                    {% if status != 'Completed' %}
+                                        <form method="post" action="{{ path('staff_mark_complete', { id: appt.id }) }}" style="display:inline-block">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('appointment_complete_' ~ appt.id) }}">
+                                            <button type="submit" class="px-3 py-1 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700">Mark Complete</button>
+                                        </form>
+                                        <form method="post" action="{{ path('staff_decline_appt', { id: appt.id }) }}" style="display:inline-block">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('appointment_decline_' ~ appt.id) }}">
+                                            <button type="submit" class="px-3 py-1 bg-red-600 text-white rounded-md text-sm hover:bg-red-700">Decline</button>
+                                        </form>
+                                        {# Reschedule link #}
+                                        <a href="{{ path('staff_reschedule_appt', { id: appt.id }) }}" class="inline-block px-3 py-1 bg-yellow-500 text-white rounded-md text-sm hover:bg-yellow-600 ml-1">Reschedule</a>
+                                    {% endif %}
+                                {% endif %}
+
+                                <form method="post" action="{{ path('staff_delete_appt', { id: appt.id }) }}" onsubmit="return confirm('Delete this appointment?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('appointment_delete_' ~ appt.id) }}">
+                                    <button type="submit" class="px-3 py-1 bg-gray-600 text-white rounded-md text-sm hover:bg-gray-700">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {# Available pool: unassigned pending appointments #}
+        {% if availableAppointments is defined and availableAppointments is not empty %}
+            <h2 class="text-xl font-semibold mb-3">Available appointments (claim from pool)</h2>
+            <div class="space-y-4">
+                {% for appt in availableAppointments %}
+                    <div class="appt-card">
+                        <div class="appt-left">
+                            <p class="font-semibold text-[var(--navy)]">{{ appt.petName|default('N/A') }} — <span class="text-sm text-gray-600">{{ appt.service ? appt.service.name : 'Service' }}</span></p>
+                            <p class="text-sm text-gray-600">{{ appt.appointmentDate ? appt.appointmentDate|date('M d, Y') : 'N/A' }} • {{ appt.appointmentTime ? appt.appointmentTime|date('h:i A') : 'N/A' }}</p>
+                            <p class="text-sm text-gray-500">Owner: {{ appt.ownerName|default('N/A') }} • {{ appt.ownerEmail|default('N/A') }}</p>
+                        </div>
+
+                        <div class="text-right">
+                            {% set status = appt.status|default('Pending') %}
+                            <div style="margin-bottom:0.5rem">
+                                <span class="status-badge status-pending">{{ status }}</span>
+                            </div>
+
+                            <div class="actions">
+                                <form method="post" action="{{ path('staff_accept_appt', { id: appt.id }) }}">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('appointment_accept_' ~ appt.id) }}">
+                                    <button type="submit" class="px-3 py-1 bg-green-600 text-white rounded-md text-sm hover:bg-green-700">Accept</button>
+                                </form>
+                                <form method="post" action="{{ path('staff_decline_appt', { id: appt.id }) }}">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('appointment_decline_' ~ appt.id) }}">
+                                    <button type="submit" class="px-3 py-1 bg-red-600 text-white rounded-md text-sm hover:bg-red-700">Decline</button>
+                                </form>
+                                <form method="post" action="{{ path('staff_delete_appt', { id: appt.id }) }}" onsubmit="return confirm('Delete this appointment?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('appointment_delete_' ~ appt.id) }}">
+                                    <button type="submit" class="px-3 py-1 bg-gray-600 text-white rounded-md text-sm hover:bg-gray-700">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {# If neither assigned nor available appointments exist, show empty state #}
+        {% if (assignedAppointments is not defined or assignedAppointments is empty) and (availableAppointments is not defined or availableAppointments is empty) %}
+            <p class="text-gray-500 italic">No appointments found.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,143 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Messages – Staff{% endblock %}
+{% block styles %}
+<style>
+  header, footer { display: none !important; }
+  .layout { display: flex; gap: 1.5rem; align-items: flex-start; }
+  .flex-1 { flex: 1; }
+  .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 0.75rem; padding: 1.25rem; box-shadow: 0 6px 18px rgba(15,23,42,0.06); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="layout">
+    {% include 'staff/_sidebar.html.twig' %}
+
+    <div class="flex-1">
+      <section class="p-8 bg-white rounded-2xl shadow-lg border border-gray-200">
+        <div class="flex items-center justify-between mb-8">
+          <div>
+            <h1 class="text-4xl font-extrabold text-[var(--navy)]">Messages</h1>
+            <p class="text-sm text-gray-600 mt-1">All inquiries submitted by customers.</p>
+          </div>
+
+          <a href="{{ path('staff_dashboard') }}"
+             class="px-5 py-2 bg-[var(--gold)] text-[var(--navy)] font-semibold rounded-lg shadow-md hover:bg-yellow-400 transition">
+            ← Dashboard
+          </a>
+        </div>
+
+        <div class="bg-[#f8f9fc] rounded-xl border border-gray-200 p-6 overflow-x-auto shadow-inner">
+          <table id="messagesTable" class="display table-fixed w-full text-sm text-gray-800 border-collapse">
+            <thead class="bg-[var(--gold)] text-[var(--navy)] uppercase font-semibold tracking-wide">
+              <tr>
+                <th class="px-5 py-3 text-left">Name</th>
+                <th class="px-5 py-3 text-left">Phone</th>
+                <th class="px-5 py-3 text-left">Email</th>
+                <th class="px-5 py-3 text-left">Subject</th>
+                <th class="px-5 py-3 text-left">Message</th>
+                <th class="px-5 py-3 text-left">Submitted</th>
+                <th class="px-5 py-3 text-left">Status</th>
+                <th class="px-5 py-3 text-center w-32">Actions</th>
+              </tr>
+            </thead>
+
+            <tbody class="divide-y divide-gray-200">
+              {% for contact in contacts %}
+                <tr class="hover:bg-yellow-50 transition duration-150">
+                  <td class="px-5 py-3 font-semibold text-[var(--gold)] whitespace-nowrap">
+                    {{ contact.firstName }} {{ contact.lastName }}
+                  </td>
+                  <td class="px-5 py-3">{{ contact.phone }}</td>
+                  <td class="px-5 py-3"><div class="truncate max-w-[180px]">{{ contact.email }}</div></td>
+                  <td class="px-5 py-3"><div class="truncate max-w-[200px]">{{ contact.subject }}</div></td>
+                  <td class="px-5 py-3"><div class="truncate max-w-[320px] italic text-gray-600">{{ contact.message }}</div></td>
+                  <td class="px-5 py-3 text-gray-600">
+                    {{ contact.submittedAt ? contact.submittedAt|date('M d, Y h:i A') : '—' }}
+                  </td>
+                  <td class="px-5 py-3">
+                    {% if contact.status == 'New' %}
+                      <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold">New</span>
+                    {% elseif contact.status == 'Read' %}
+                      <span class="px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs font-semibold">Read</span>
+                    {% else %}
+                      <span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold">{{ contact.status }}</span>
+                    {% endif %}
+                  </td>
+                  <td class="px-5 py-3 text-center">
+                    <div class="flex justify-center items-center space-x-2">
+                      <a href="{{ path('staff_contacts_show', {'id': contact.id}) }}"
+                         class="inline-flex items-center justify-center px-3 py-1.5 bg-blue-600 text-white rounded-md text-xs font-semibold hover:bg-blue-700 transition">
+                        View
+                      </a>
+
+                      <form method="post"
+                            action="{{ path('staff_contacts_delete', {'id': contact.id}) }}"
+                            onsubmit="return confirm('Delete this message?');"
+                            class="inline-block">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ contact.id) }}">
+                        <button type="submit"
+                                class="inline-flex items-center justify-center px-3 py-1.5 bg-red-600 text-white rounded-md text-xs font-semibold hover:bg-red-700 transition">
+                          Delete
+                        </button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              {% else %}
+                <tr>
+                  <td colspan="8" class="px-5 py-6 text-center text-gray-400 italic">
+                    No messages found.
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.3.4/css/dataTables.dataTables.min.css">
+  <script src="https://cdn.datatables.net/2.3.4/js/dataTables.min.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      if (window.jQuery && $.fn.dataTable && $.fn.dataTable.isDataTable('#messagesTable')) {
+        $('#messagesTable').DataTable().destroy();
+      }
+
+      const table = new DataTable('#messagesTable', {
+        pageLength: 8,
+        ordering: true,
+        responsive: true,
+        autoWidth: false,
+        language: {
+          search: "🔍 Search:",
+          lengthMenu: "Show _MENU_ messages per page",
+          info: "Showing _START_–_END_ of _TOTAL_ messages",
+          paginate: { previous: "← Prev", next: "Next →" }
+        }
+      });
+
+      const searchBox = document.querySelector(".dataTables_filter input");
+      if (searchBox) {
+        searchBox.classList.add(
+          "border", "border-gray-300", "rounded-md", "px-3", "py-2",
+          "focus:ring-2", "focus:ring-[var(--gold)]", "outline-none", "ml-2"
+        );
+      }
+
+      const lengthSelect = document.querySelector(".dataTables_length select");
+      if (lengthSelect) {
+        lengthSelect.classList.add(
+          "border", "border-gray-300", "rounded-md", "px-2", "py-1",
+          "bg-white", "text-[var(--navy)]", "outline-none"
+        );
+      }
+    });
+  </script>
+{% endblock %}

@@ -4,10 +4,10 @@ namespace App\Form;
 
 use App\Entity\Services;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\MoneyType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ServicesType extends AbstractType
@@ -17,15 +17,16 @@ class ServicesType extends AbstractType
         $builder
             ->add('name', TextType::class, [
                 'label' => 'Service Name',
+                'attr' => ['placeholder' => 'Enter service name'],
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'Description',
-                'required' => false,
+                'attr' => ['placeholder' => 'Enter description'],
             ])
             ->add('price', MoneyType::class, [
-                'label' => 'Price (₱)',
+                'label' => 'Price',
                 'currency' => 'PHP',
-                'divisor' => 1,
+                'attr' => ['placeholder' => 'Enter price'],
             ]);
     }
 
@@ -33,6 +34,9 @@ class ServicesType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Services::class,
+            'csrf_protection' => true,
+            'csrf_field_name' => '_token',
+            'csrf_token_id'   => 'services_item', 
         ]);
     }
 }

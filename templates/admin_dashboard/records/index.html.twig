@@ -1,0 +1,77 @@
+{% extends 'admin_dashboard/base.html.twig' %}
+
+{% block title %}Records – Admin{% endblock %}
+
+{% block content %}
+<section class="p-6 bg-white rounded-2xl shadow-lg border border-gray-200">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="text-3xl font-bold text-[var(--navy)]">All Records</h1>
+      <p class="text-sm text-gray-600">View and manage system records (services, appointments, messages).</p>
+    </div>
+    <div class="flex gap-2">
+      <form method="get" class="flex gap-2 items-center">
+        <input type="text" name="q" value="{{ q }}" placeholder="Search..." class="px-3 py-2 border rounded" />
+        <select name="type" class="px-3 py-2 border rounded">
+          <option value="all" {{ type == 'all' ? 'selected' : '' }}>All</option>
+          <option value="services" {{ type == 'services' ? 'selected' : '' }}>Services</option>
+          <option value="appointments" {{ type == 'appointments' ? 'selected' : '' }}>Appointments</option>
+          <option value="contacts" {{ type == 'contacts' ? 'selected' : '' }}>Messages</option>
+        </select>
+        <select name="staff_id" class="px-3 py-2 border rounded">
+          <option value="">All staff</option>
+          {% for s in staffList %}
+            <option value="{{ s.id }}" {{ staffId == s.id ? 'selected' : '' }}>{{ s.fullName ?: s.userIdentifier }}</option>
+          {% endfor %}
+        </select>
+        <select name="status" class="px-3 py-2 border rounded">
+          <option value="">Any status</option>
+          <option value="Pending" {{ status == 'Pending' ? 'selected' : '' }}>Pending</option>
+          <option value="Accepted" {{ status == 'Accepted' ? 'selected' : '' }}>Accepted</option>
+          <option value="New" {{ status == 'New' ? 'selected' : '' }}>New</option>
+          <option value="Read" {{ status == 'Read' ? 'selected' : '' }}>Read</option>
+        </select>
+        <button class="px-4 py-2 bg-[var(--gold)] text-[var(--navy)] rounded">Search</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="bg-[#f8f9fc] rounded-xl border border-gray-200 p-4 overflow-x-auto">
+    <table class="min-w-full text-sm text-gray-800">
+      <thead class="bg-[var(--gold)] text-[var(--navy)] uppercase font-semibold tracking-wider">
+        <tr>
+          <th class="px-5 py-3 text-left">Type</th>
+          <th class="px-5 py-3 text-left">Title</th>
+          <th class="px-5 py-3 text-left">Staff</th>
+          <th class="px-5 py-3 text-left">Date</th>
+          <th class="px-5 py-3 text-left">Status</th>
+          <th class="px-5 py-3 text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200">
+        {% for r in results %}
+          <tr class="hover:bg-yellow-50">
+            <td class="px-5 py-3">{{ r.type }}</td>
+            <td class="px-5 py-3 font-semibold">{{ r.title }}</td>
+            <td class="px-5 py-3">{{ r.staff }}</td>
+            <td class="px-5 py-3">{{ r.date ? r.date|date('M d, Y H:i') : '—' }}</td>
+            <td class="px-5 py-3">{{ r.status ?: '—' }}</td>
+            <td class="px-5 py-3 text-center">
+              <a href="{{ path(r.route_show, {'id': r.id}) }}" class="px-3 py-1 bg-blue-600 text-white rounded text-xs">View</a>
+              <a href="{{ path(r.route_edit, {'id': r.id}) }}" class="px-3 py-1 bg-yellow-400 text-[var(--navy)] rounded text-xs">Edit</a>
+              <form method="post" action="{{ path(r.route_delete, {'id': r.id}) }}" style="display:inline-block" onsubmit="return confirm('Delete this record?');">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ r.id) }}">
+                <button type="submit" class="px-3 py-1 bg-red-600 text-white rounded text-xs">Delete</button>
+              </form>
+            </td>
+          </tr>
+        {% else %}
+          <tr>
+            <td colspan="6" class="px-5 py-6 text-center text-gray-400 italic">No records found.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

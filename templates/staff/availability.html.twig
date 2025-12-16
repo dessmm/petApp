@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Availability Removed – LuxePaws{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto py-12">
+  <div class="bg-white p-6 rounded-lg shadow">
+    <h1 class="text-2xl font-bold mb-4">Availability Removed</h1>
+    <p class="text-gray-600 mb-6">The availability feature has been removed from the staff panel. Appointments are managed via the "My Appointments" and dashboard pages.</p>
+    <a href="{{ path('staff_dashboard') }}" class="px-4 py-2 bg-[var(--gold)] text-[var(--navy)] rounded font-semibold">Back to Dashboard</a>
+  </div>
+</div>
+{% endblock %}

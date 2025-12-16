@@ -1,0 +1,263 @@
+{% extends 'admin_dashboard/base.html.twig' %}
+
+{% block title %}User Accounts – Admin{% endblock %}
+
+{% block styles %}
+<style>
+  header, footer {
+    display: none !important;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="p-6 bg-white rounded-2xl shadow-lg border border-gray-200">
+
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="text-3xl font-bold text-[var(--navy)]">User Accounts</h1>
+      <p class="text-sm text-gray-600">Manage all registered users below.</p>
+    </div>
+
+    <a href="{{ path('app_admin_user_new') }}"
+       class="px-3 py-2 bg-[var(--gold)] text-[var(--navy)] font-semibold rounded-lg shadow hover:bg-yellow-400 transition">
+      Add User
+    </a>
+  </div>
+
+  <div class="bg-[#f8f9fc] rounded-xl border border-gray-200 p-4 overflow-x-auto">
+    <table id="userTable" class="display min-w-full text-sm text-gray-800">
+      <thead class="bg-[var(--gold)] text-[var(--navy)] uppercase font-semibold tracking-wider">
+        <tr>
+          <th class="px-5 py-3 text-left">Username</th>
+          <th class="px-5 py-3 text-left">Email</th>
+          <th class="px-5 py-3 text-left">Full Name</th>
+          <th class="px-5 py-3 text-left">Role</th>
+          <th class="px-5 py-3 text-left">Created</th>
+          <th class="px-5 py-3 text-center">Actions</th>
+        </tr>
+      </thead>
+
+      <tbody class="divide-y divide-gray-200">
+        {% for user in users %}
+        <tr class="hover:bg-yellow-50 transition duration-150">
+
+          <td class="px-5 py-3 font-semibold text-[var(--navy)]">{{ user.username }}</td>
+          <td class="px-5 py-3 text-gray-700">{{ user.email }}</td>
+          <td class="px-5 py-3 text-gray-700">{{ user.fullName }}</td>
+
+          <td class="px-5 py-3">
+            {% set role = user.roles[0] %}
+            {% if role == 'ROLE_ADMIN' %}
+              <span class="text-red-600 font-semibold">Admin</span>
+            {% elseif role == 'ROLE_STAFF' %}
+              <span class="text-blue-600 font-semibold">Staff</span>
+            {% else %}
+              <span class="text-gray-700">User</span>
+            {% endif %}
+          </td>
+
+          <td class="px-5 py-3 text-gray-600">
+            {{ user.createdAt|date('M d, Y') }}
+          </td>
+
+          <td class="px-5 py-3 text-center space-x-2">
+            <a href="{{ path('app_admin_user_show', { id: user.id }) }}"
+               class="inline-block px-3 py-1 bg-blue-600 text-white rounded-md text-xs font-semibold hover:bg-blue-700 transition">
+              View
+            </a>
+
+            <a href="{{ path('app_admin_user_edit', { id: user.id }) }}"
+               class="inline-block px-3 py-1 bg-yellow-400 text-[var(--navy)] rounded-md text-xs font-semibold hover:bg-yellow-300 transition">
+              Edit
+            </a>
+
+            <form id="delete-user-form-{{ user.id }}" method="post" action="{{ path('app_admin_user_delete', { id: user.id }) }}" class="inline">
+              <input type="hidden" name="_token" value="{{ csrf_token('delete-user-' ~ user.id) }}">
+              <button type="button"
+                      class="inline-block px-3 py-1 bg-red-600 text-white rounded-md text-xs font-semibold hover:bg-red-700 transition open-delete-modal"
+                      data-user-id="{{ user.id }}"
+                      data-username="{{ user.username }}">
+                Delete
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="7" class="px-5 py-6 text-center text-gray-400 italic">
+            No users found
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+</section>
+
+<!-- Delete confirmation modal -->
+<div id="deleteModal" class="fixed inset-0 z-50 hidden items-center justify-center">
+  <div class="fixed inset-0 bg-black/50" data-action="close-modal"></div>
+  <div class="relative bg-white rounded-2xl shadow-lg w-full max-w-md mx-4">
+    <div class="p-6">
+      <h3 class="text-xl font-bold text-[var(--navy)] mb-2">Confirm Delete</h3>
+      <p id="deleteModalBody" class="text-sm text-gray-600 mb-6">Are you sure you want to delete this user? This action cannot be undone.</p>
+      <div class="flex justify-end space-x-3">
+        <button id="deleteModalCancel" class="px-4 py-2 bg-gray-200 text-[var(--navy)] rounded-lg hover:bg-gray-300">Cancel</button>
+        <button id="deleteModalConfirm" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+
+  <style>
+    .dataTables_wrapper { margin-top: 1rem; }
+    .dataTables_filter input {
+      margin-left: 0.5rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 0.4rem 0.6rem;
+      background: #ffffff;
+      color: #1e293b;
+      outline: none;
+    }
+    .dataTables_filter input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 2px rgba(212,175,55,0.3);
+    }
+    .dataTables_paginate .current {
+      background: var(--gold) !important;
+      color: var(--navy) !important;
+      border-radius: 6px;
+    }
+  </style>
+
+  <script>
+    (function(){
+      function onReady(fn){
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', fn);
+        } else {
+          fn();
+        }
+      }
+
+      onReady(function () {
+        // Robust loader: ensure jQuery and DataTables are loaded, then initialize
+        function loadScript(url){
+          return new Promise(function(resolve, reject){
+            var s = document.createElement('script');
+            s.src = url;
+            s.async = true;
+            s.onload = resolve;
+            s.onerror = function(e){ reject(new Error('Failed to load ' + url)); };
+            document.head.appendChild(s);
+          });
+        }
+
+          (async function(){
+            // Helper to initialize DataTable if available
+            function initTable(){
+              try {
+                if (window.jQuery && ( ( $.fn && $.fn.dataTable ) || ( $.fn && $.fn.DataTable ) )) {
+                  if ($.fn.dataTable && $.fn.dataTable.isDataTable && $.fn.dataTable.isDataTable('#userTable')) {
+                    $('#userTable').DataTable().destroy();
+                  }
+                  $('#userTable').DataTable({
+                    pageLength: 8,
+                    ordering: true,
+                    responsive: true,
+                    autoWidth: false,
+                    language: {
+                      search: 'Search',
+                      lengthMenu: 'Show _MENU_ per page',
+                      info: 'Showing _START_ to _END_ of _TOTAL_ users',
+                      paginate: { previous: 'Prev', next: 'Next' }
+                    }
+                  });
+                  console.info('User table initialized');
+                  return true;
+                }
+              } catch (e) {
+                console.error('DataTables init failed:', e);
+              }
+              return false;
+            }
+
+            try {
+              // Try immediate init first (if parent template already loaded jQuery/DataTables)
+              if (initTable()) return;
+
+              // Load jQuery if missing
+              if (!window.jQuery) {
+                console.info('jQuery missing — loading CDN...');
+                await loadScript('https://code.jquery.com/jquery-3.7.1.min.js');
+              }
+
+              // Try init again after jQuery
+              if (initTable()) return;
+
+              // Load DataTables if still missing
+              if (!(window.jQuery && $.fn && ($.fn.dataTable || $.fn.DataTable))) {
+                console.info('DataTables missing — loading CDN...');
+                await loadScript('https://cdn.datatables.net/2.3.4/js/dataTables.min.js');
+              }
+
+              // Final attempt
+              if (initTable()) return;
+
+              console.error('Failed to initialize DataTable after loading attempts');
+            } catch (err) {
+              console.error('Error ensuring DataTables scripts:', err);
+            }
+          })();
+
+        // Delete modal logic
+        const modal = document.getElementById('deleteModal');
+        const modalBody = document.getElementById('deleteModalBody');
+        const btnCancel = document.getElementById('deleteModalCancel');
+        const btnConfirm = document.getElementById('deleteModalConfirm');
+        let currentUserId = null;
+
+        function openModal(userId, username) {
+          currentUserId = userId;
+          if (modalBody) modalBody.textContent = `Are you sure you want to delete the user "${username}"? This action cannot be undone.`;
+          if (modal) {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+          }
+        }
+
+        function closeModal() {
+          currentUserId = null;
+          if (modal) {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+          }
+        }
+
+        document.querySelectorAll('.open-delete-modal').forEach(btn => {
+          btn.addEventListener('click', () => {
+            openModal(btn.dataset.userId, btn.dataset.username);
+          });
+        });
+
+        if (btnCancel) btnCancel.addEventListener('click', closeModal);
+        const closeBackdrop = modal && modal.querySelector('[data-action="close-modal"]');
+        if (closeBackdrop) closeBackdrop.addEventListener('click', closeModal);
+
+        if (btnConfirm) btnConfirm.addEventListener('click', () => {
+          if (!currentUserId) return closeModal();
+          const form = document.getElementById('delete-user-form-' + currentUserId);
+          if (form) form.submit();
+          closeModal();
+        });
+      });
+    })();
+  </script>
+{% endblock %}

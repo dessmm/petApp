@@ -1,0 +1,30 @@
+<div class="sidebar bg-gray-100 w-64 p-6 rounded-xl shadow-lg fixed left-6 top-6 h-[calc(100vh-3rem)] overflow-auto">
+    <style>
+        /* Reserve left space equal to sidebar left offset + width (w-64 + left-6) */
+        .layout { margin-left: calc(16rem + 1.5rem) !important; }
+        .content { margin-left: calc(16rem + 1.5rem) !important; }
+    </style>
+    <h2 class="text-2xl font-bold mb-6 text-[var(--navy)]">Staff Panel</h2>
+    <nav class="flex flex-col gap-2">
+        <a href="{{ path('staff_dashboard') }}" class="px-4 py-2 rounded-lg {{ app.request.attributes.get('_route') == 'staff_dashboard' ? 'bg-gray-300 font-bold' : 'hover:bg-gray-200' }}">
+            Dashboard
+        </a>
+        <a href="{{ path('staff_appointments') }}" class="px-4 py-2 rounded-lg {{ app.request.attributes.get('_route') == 'staff_appointments' ? 'bg-gray-300 font-bold' : 'hover:bg-gray-200' }}">
+            My Appointments
+        </a>
+        <a href="{{ path('staff_contacts_index') }}" class="px-4 py-2 rounded-lg {{ app.request.attributes.get('_route') starts with 'staff_contacts' ? 'bg-gray-300 font-bold' : 'hover:bg-gray-200' }}">
+            Messages
+        </a>
+        <a href="{{ path('staff_services') }}" class="px-4 py-2 rounded-lg {{ app.request.attributes.get('_route') == 'staff_services' ? 'bg-gray-300 font-bold' : 'hover:bg-gray-200' }}">
+            Services
+        </a>
+        <a href="{{ path('staff_profile') }}" class="px-4 py-2 rounded-lg {{ app.request.attributes.get('_route') == 'staff_profile' ? 'bg-gray-300 font-bold' : 'hover:bg-gray-200' }}">
+            Profile
+        </a>
+    </nav>
+    <div class="mt-6">
+        <form method="post" action="{{ path('app_logout') }}">
+            <button type="submit" class="block w-full text-left px-4 py-2 rounded-lg hover:bg-gray-200 text-[var(--navy)]">Logout</button>
+        </form>
+    </div>
+</div>
